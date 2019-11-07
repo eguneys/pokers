@@ -1,11 +1,14 @@
-###
+### Description
 
-
-Stacks take turns to act. Fold and All-in drops from acting further. There is a button that decides BB SB and first to act. Next to button is SB and next is BB. First to act on Pre-flop is next to BB, on other rounds it's next to button.
-There are Betting rounds Pre-flop flop turn river. Each betting round ends once all players have acted and all bets are equalized, all bets go in to the middle pot, and the next betting round begins. After river ends middle pot is distributed.
+Players have roles Involved, Fold, New-Allin, Old-Allin that take turns to act. Fold and All-in players can't act further. There is a button that decides BB SB and first to act. Next to button is SB and next is BB. First to act on Pre-flop is next to BB, on other rounds it's next to button.
+There are Betting rounds Pre-flop flop turn river. 
+A betting round ends once all players have acted and all bets are equalized, all bets go in to the running pot or side pots.
+When a betting round ends except river, and there are at least two involved players, next betting round begins.
+When river betting round ends, involved and all-in players go to showdown.
+When a betting round ends while one involved player remain and there are no all-in players, remaining player takes the pot. If there are all-in players they go to showdown.
+On a betting round, when no involved players remain all-in players go to showdown.
 On a betting round, when the action returns to a player, if facing a full-raise is allowed to raise, otherwise can only call or fold.
-
-At the end of a betting round players that went all-in create side pots. A side pot consists of amount of wager and players involved.
+At the end of a betting round, players that went all-in create side pots. A side pot consists of amount of wager and players involved.
 
     Dealer(
         Int blinds
@@ -33,9 +36,21 @@ At the end of a betting round players that went all-in create side pots. A side 
         lazy val StackIndex SB = (button + 1) % stacks.length
         lazy val StackIndex BB = (SB + 1) % stacks.length
 
+
+        def allIns: Int
+        def folds: Int
+        def involveds: Int
+
+        def noneInvolved = involveds === 0
+        def oneInvolved = involveds === 1
+        def allInsExists = allIns > 0
+
+        def allActed: Boolean
+        def wagersEqualized: Booelan
+
         def List[PotDistribution] distribute(List[HandValueMagic] handValues)
 
-        lazy val Option[Dealer] finalizeDealer = nextTurn() orElse nextRound()
+
         def Option[Dealer] nextRound()
         def Option[Dealer] nextTurn()
 
@@ -54,7 +69,40 @@ At the end of a betting round players that went all-in create side pots. A side 
        wager involved
        100 0 1 2 3
 
-Dealer
+
+
+    Situation(
+        Dealer dealer) {
+
+      lazy val BettingRound round = dealer.round
+
+      def nextTurn: Boolean = !nextRound || !end
+      def nextRound: Boolean = roundEnd && round !== River
+
+      def roundEnd: Boolean = dealer.allActed && dealer.wagersEqualized
+
+      def showdown: Boolean = if (roundEnd) {
+          (round === River && !oneWin) ||
+          (dealer.oneInvolved && dealer.allInsExists)
+      } else {
+          dealer.noneInvolved
+      }
+
+      def oneWin: Boolean = dealer.oneInvolved && !dealer.allInsExists
+    
+      def end: Boolean = showdown || oneWin
+
+      def Option[List[PotDistribution]] distShowdown()
+      def Option[List[PotDistribution]] distOneWin()
+
+      def move(act PlayerAct): Valid[Move]
+    }
+
+
+    PlayerAct
+        Raise(Int to) Call Check Fold All-in
+
+Dealer Visual - Fen
 
      blinds bettingRound button turnToAct allowRaiseUntil lastFullRaise!runningPot~sidePot
      role stack recentWager lastAction|. 
