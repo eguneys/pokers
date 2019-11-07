@@ -33,12 +33,26 @@ At the end of a betting round players that went all-in create side pots. A side 
         lazy val StackIndex SB = (button + 1) % stacks.length
         lazy val StackIndex BB = (SB + 1) % stacks.length
 
-        lazy val StackIndex nextToAct()
+        def List[PotDistribution] distribute(List[HandValueMagic] handValues)
+
+        lazy val Option[Dealer] finalizeDealer = nextTurn() orElse nextRound()
+        def Option[Dealer] nextRound()
+        def Option[Dealer] nextTurn()
+
+        def Option[Dealer] check()
+        def Option[Dealer] raise()
+        def Option[Dealer] fold()
+        def Option[Dealer] call()
+        def Option[Dealer] allin()
     }
 
-Pot
-    wager involved
-    100 0 1 2 3
+    PotDistribution
+      wager involved
+      100 0 1 2
+
+    Pot
+       wager involved
+       100 0 1 2 3
 
 Dealer
 
