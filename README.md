@@ -48,8 +48,8 @@ At the end of a betting round, players that went all-in create side pots. A side
         def allActed: Boolean
         def wagersEqualized: Booelan
 
-        def List[PotDistribution] distribute(List[HandValueMagic] handValues)
-
+        def PotDistribution distributeOne()
+        def List[PotDistribution] distributeAll(List[HandValueMagic] handValues)
 
         def Option[Dealer] nextRound()
         def Option[Dealer] nextTurn()
@@ -61,23 +61,16 @@ At the end of a betting round, players that went all-in create side pots. A side
         def Option[Dealer] allin()
     }
 
-    PotDistribution
-      wager involved
-      100 0 1 2
+Situation(
+    HandDealer handDealer,
+    Dealer dealer) {
 
-    Pot
-       wager involved
-       100 0 1 2 3
-
-
-
-    Situation(
-        Dealer dealer) {
+      lazy val actor = Actor(this)
 
       lazy val BettingRound round = dealer.round
 
-      def nextTurn: Boolean = !nextRound || !end
-      def nextRound: Boolean = roundEnd && round !== River
+      def nextTurn: Boolean = !nextRound && !end
+      def nextRound: Boolean = roundEnd && round !== River && !end
 
       def roundEnd: Boolean = dealer.allActed && dealer.wagersEqualized
 
@@ -92,15 +85,59 @@ At the end of a betting round, players that went all-in create side pots. A side
     
       def end: Boolean = showdown || oneWin
 
-      def Option[List[PotDistribution]] distShowdown()
-      def Option[List[PotDistribution]] distOneWin()
+      def Option[List[PotDistribution]] winnerShowdown()
+      def Option[PotDistribution] winnerOneWin()
 
       def move(act PlayerAct): Valid[Move]
     }
 
+    Actor(Situation situation) {
+
+    }
+
+    Move(
+        playerAct PlayerAct,
+        dealerAct DealerAct,
+        playerDiff PlayerDiff,
+        situationBefore: Situation,
+        after: Dealer) {
+
+        def before = situationBefore.dealer
+
+        def situationAfter = Situation(finalizeAfter)
+
+        def finalizeAfter: Dealer = after
+
+    }
+
+
+    DealerAct
+        NextTurn(toAct StackIndex)
+        NextRound(toAct StackIndex, middle MiddleCards, runningPot Pot, sidePots List[Pot])
+        OneWin(pot PotDistribution)
+        Showdown(middle MiddleCards, hands Map[StackIndex, Hand], pots List[PotDistribution])
 
     PlayerAct
         Raise(Int to) Call Check Fold All-in
+
+    PlayerDiff
+        newStack Int
+        newWager Int
+
+    MiddleCards
+        Flop Option[List[Card]]
+        Turn Option[Card]
+        River Option[Card]
+
+    PotDistribution
+      wager Int
+      involved List[StackIndex]
+      100 0 1 2
+
+    Pot
+       wager Int
+       involved List[StackIndex]
+       100 0 1 2 3
 
 Dealer Visual - Fen
 
