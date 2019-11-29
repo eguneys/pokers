@@ -85,8 +85,7 @@ Situation(
     
       def end: Boolean = showdown || oneWin
 
-      def Option[List[PotDistribution]] winnerShowdown()
-      def Option[PotDistribution] winnerOneWin()
+      def Option[Winners] winners()
 
       def move(act PlayerAct): Valid[Move]
     }
@@ -114,8 +113,8 @@ Situation(
     DealerAct
         NextTurn(toAct StackIndex)
         NextRound(toAct StackIndex, middle MiddleCards, runningPot Pot, sidePots List[Pot])
-        OneWin(pot PotDistribution)
-        Showdown(middle MiddleCards, hands Map[StackIndex, Hand], pots List[PotDistribution])
+        OneWin(winners Winners)
+        Showdown(middle MiddleCards, hands List[Option[Hand]], winners Winners)
 
     PlayerAct
         Raise(Int to) Call Check Fold All-in
@@ -123,11 +122,16 @@ Situation(
     PlayerDiff
         newStack Int
         newWager Int
+        newRole Role
 
     MiddleCards
         Flop Option[List[Card]]
         Turn Option[Card]
         River Option[Card]
+
+    Winners
+        pots List[PotDistribution]
+        stacks List[Int]
 
     PotDistribution
       wager Int
