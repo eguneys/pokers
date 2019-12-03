@@ -67,6 +67,12 @@ Situation(
 
       lazy val actor = Actor(this)
 
+      lazy val moves: List[Move] = actor.validMoves
+
+      def raiseMove(Raise raise): Option[Move] = actor.validRaise(raise)
+
+      lazy val possibleActs: List[PlayerAct] = moves map _.playerAct
+
       lazy val BettingRound round = dealer.round
 
       def nextTurn: Boolean = !nextRound && !end
@@ -84,8 +90,6 @@ Situation(
       def oneWin: Boolean = dealer.oneInvolved && !dealer.allInsExists
     
       def end: Boolean = showdown || oneWin
-
-      def Option[Winners] winners()
 
       def move(act PlayerAct): Valid[Move]
     }
@@ -117,7 +121,17 @@ Situation(
         Showdown(middle MiddleCards, hands List[Option[Hand]], winners Winners)
 
     PlayerAct
-        Raise(Int to) Call Check Fold All-in
+        Raise(Int to)
+            ThirdPotRaise
+            HalfPotRaise
+            PotRaise
+        Call 
+        Check
+        Fold
+        All-in
+            AllInCall
+            AllInHalfRaise
+            AllInFullRaise
 
     PlayerDiff
         newStack Int
