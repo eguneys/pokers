@@ -121,14 +121,14 @@ Situation(
         Showdown(middle MiddleCards, hands List[Option[Hand]], winners Winners)
 
     PlayerAct
-        Raise(Int to)
+        Raise(Int to) ~ RR TR HR PR
             ThirdPotRaise
             HalfPotRaise
             PotRaise
-        Call 
-        Check
-        Fold
-        All-in
+        Call ~ CA
+        Check ~ CH
+        Fold ~ FO
+        All-in ~ AA AC AH AF
             AllInCall
             AllInHalfRaise
             AllInFullRaise
@@ -163,6 +163,21 @@ Dealer Visual - Fen
      role stack recentWager lastAction|. 
 
      100 (P|F|T|R) 0 0 0 100!100 0 1 2 3~50 0 1 2
-     (I|F|O|N) 100 10 C
-     I 100 10 R200
+     (I|F|O|N) 100 10 CA
+     I 100 10 RR200
      I 100 10 .
+
+Player Act - Uci
+
+     Raise(Int to) ~ RR TR HR PR
+         ThirdPotRaise
+         HalfPotRaise
+         PotRaise
+     Call ~ CA
+     Check ~ CH
+     Fold ~ FO
+     All-in ~ AA AC AH AF
+         AllIn(Int to)
+         AllInCall
+         AllInHalfRaise
+         AllInFullRaise
