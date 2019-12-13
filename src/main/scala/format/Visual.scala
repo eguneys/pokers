@@ -15,7 +15,7 @@ object Visual {
 
   private val HeaderPattern = "(\\d+) (P|F|T|R) (\\d) (\\d) (\\d) (\\d+)".r
 
-  private val StackPattern = "(I|F|O|N) (\\d+) (\\d+) (\\.|\\w)".r
+  private val StackPattern = "(I|F|O|N) (\\d+) (\\d+) (\\.|\\w+)".r
 
   def readStack(source: String): Stack = source match {
     case StackPattern(role, stack, recentWager, ".") =>

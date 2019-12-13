@@ -51,8 +51,8 @@ At the end of a betting round, players that went all-in create side pots. A side
         def PotDistribution distributeOne()
         def List[PotDistribution] distributeAll(List[HandValueMagic] handValues)
 
-        def Option[Dealer] nextRound()
-        def Option[Dealer] nextTurn()
+        def Dealer nextRound()
+        def Dealer nextTurn()
 
         def Option[Dealer] check()
         def Option[Dealer] raise()
