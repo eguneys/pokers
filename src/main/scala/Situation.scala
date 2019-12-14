@@ -2,13 +2,13 @@ package poker
 
 case class Situation(dealer: Dealer) {
 
-  // lazy val actor = Actor(this)
+  lazy val actor = Actor(this)
 
-  // lazy val moves: List[Move] = actor.validMoves
+  lazy val moves: List[Move] = actor.validMoves
 
-  // def raiseMove(Raise raise): Option[Move] = actor.validRaise(raise)
+  def raiseMove(raise: Raise): Option[Move] = actor.validRaise(raise)
 
-  // lazy val possibleActs: List[PlayerAct] = moves map _.playerAct
+  lazy val possibleActs: List[PlayerAct] = moves.map(_.playerAct)
 
   lazy val round: BettingRound = dealer.round
 
@@ -28,5 +28,5 @@ case class Situation(dealer: Dealer) {
   
   def end: Boolean = showdown || oneWin
 
-  // def move(act PlayerAct): Valid[Move]
+  def move(act: PlayerAct): Valid[Move] = ???
 }

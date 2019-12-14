@@ -12,12 +12,12 @@ case class Dealer(blinds: Int,
   lazy val SB: StackIndex = (button + 1) % stacks.length
   lazy val BB: StackIndex = (SB + 1) % stacks.length
 
-  def newAllIns: Int = stacks count(_.role == NewAllIn)
-  def oldAllIns: Int = stacks count(_.role == OldAllIn)
+  def newAllIns: Int = stacks count(_ is NewAllIn)
+  def oldAllIns: Int = stacks count(_ is OldAllIn)
 
   def allIns = newAllIns + oldAllIns
-  def folds: Int = stacks count(_.role == Folded)
-  def involveds: Int = stacks count(_.role == Involved)
+  def folds: Int = stacks count(_ is Folded)
+  def involveds: Int = stacks count(_ is Involved)
 
   def noneInvolved = involveds == 0
   def oneInvolved = involveds == 1
@@ -26,7 +26,7 @@ case class Dealer(blinds: Int,
   def allActed: Boolean = stacks forall(!_.lastAction.isDefined)
   def wagersEqualized: Boolean = {
     val involvedStacks = stacks
-      .filter(_.role==Involved)
+      .filter(_ is Involved)
 
     involvedStacks match {
       case head :: tail => 

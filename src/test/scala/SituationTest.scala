@@ -21,6 +21,22 @@ I 100 10 CA
 I 100 10 CA
 I 100 10 CH
 """).nextRound must beTrue
+
+      ("""
+10 P 0 0 2 10!
+I 100 10 CA
+F 100 5 F
+I 100 10 CH
+""").nextRound must beTrue
+
+
+      ("""
+10 P 0 0 2 10!
+I 100 10 CA
+N 0 5 AA
+I 100 10 CH
+""").nextRound must beTrue
+
     }
 
     "detect showdown" in {
@@ -33,8 +49,8 @@ I 100 10 CH
 
       ("""
 10 P 0 0 2 10!
-N 0 90 NA
-N 0 10 NA
+N 0 90 AA
+N 0 10 AA
 I 0 100 CA
 """).showdown must beTrue
 
