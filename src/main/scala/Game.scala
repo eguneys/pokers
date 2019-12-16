@@ -12,4 +12,12 @@ case class Game(
     this
   }
 
+  def dealer = situation.dealer
+
+}
+
+object Game {
+
+  def apply(dealer: Dealer): Game = new Game(Situation(dealer))
+
 }

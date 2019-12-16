@@ -28,5 +28,13 @@ case class Situation(dealer: Dealer) {
   
   def end: Boolean = showdown || oneWin
 
-  def move(act: PlayerAct): Valid[Move] = ???
+  def move(act: PlayerAct): Valid[Move] = {
+    def findMove(act: PlayerAct) = act match {
+      case r:Raise => raiseMove(r)
+      case act => moves find(_.playerAct == act)
+    }
+    for {
+      m <- findMove(act) toValid "Not a valid move"
+    } yield m
+  }
 }

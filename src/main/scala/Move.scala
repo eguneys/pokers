@@ -2,10 +2,11 @@ package poker
 
 case class Move(
   playerAct: PlayerAct,
-  dealerAct: DealerAct,
-  playerDiff: PlayerDiff,
   situationBefore: Situation,
   after: Dealer) {
+
+  def dealerAct: DealerAct = ???
+  def playerDiff: PlayerDiff = ???
 
   def before = situationBefore.dealer
 

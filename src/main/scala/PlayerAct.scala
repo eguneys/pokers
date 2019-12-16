@@ -6,25 +6,27 @@ sealed trait PlayerAct {
 
 }
 
-abstract class Raise(to: Int) extends PlayerAct {
+abstract class Raise extends PlayerAct {
 
   override val uci = "RR"
+
+  val to: Int
 
 } // ~ RR TR HR PR
 
-case class RegularRaise(to: Int) extends Raise(to) {
+case class RegularRaise(to: Int) extends Raise {
   override val uci = "RR"
 }
 
-case class ThirdPotRaise(to: Int) extends Raise(to) {
+case class ThirdPotRaise(to: Int) extends Raise {
   override val uci = "TR"
 }
 
-case class HalfPotRaise(to: Int) extends Raise(to) {
+case class HalfPotRaise(to: Int) extends Raise {
   override val uci = "HR"
 }
 
-case class PotRaise(to: Int) extends Raise(to) {
+case class PotRaise(to: Int) extends Raise {
   override  val uci = "PR"
 }
   
@@ -58,4 +60,14 @@ case object AllInHalfRaise extends AllIn {
 
 case object AllInFullRaise extends AllIn {
   override  val uci = "AF"
+}
+
+case object PlayerAct {
+
+  def forsyth(s: String): Option[PlayerAct] = allByForsyth get s
+
+  val all = List(Call, Check, Fold, AllInNone, AllInCall, AllInHalfRaise, AllInFullRaise)
+
+  val allByForsyth = all map { a => a.uci -> a } toMap
+
 }

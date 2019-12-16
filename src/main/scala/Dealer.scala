@@ -41,12 +41,26 @@ case class Dealer(blinds: Int,
     // def Option[Dealer] nextRound()
     // def Option[Dealer] nextTurn()
 
-    // def Option[Dealer] check()
-    // def Option[Dealer] raise()
-    // def Option[Dealer] fold()
-    // def Option[Dealer] call()
-    // def Option[Dealer] allin()
+
+  def call(): Option[Dealer] = {
+    Some(this)
   }
+
+  def check() :Option[Dealer] = {
+    None
+  }
+
+  def raise(to: Int): Option[Dealer] = {
+    Some(this)
+  }
+
+  // def Option[Dealer] fold()
+
+  // def Option[Dealer] allin()
+
+  def visual = format.Visual >> this
+
+}
 
 
 case object Dealer {
