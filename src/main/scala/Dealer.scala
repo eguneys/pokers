@@ -23,17 +23,25 @@ case class Dealer(blinds: Int,
   def oneInvolved = involveds == 1
   def allInsExists = allIns > 0
 
+  def involvedStacks: List[Stack] = stacks.filter(_ is Involved)
+
   def allActed: Boolean = stacks forall(!_.lastAction.isDefined)
   def wagersEqualized: Boolean = {
-    val involvedStacks = stacks
-      .filter(_ is Involved)
-
     involvedStacks match {
       case head :: tail => 
         tail.forall(_.recentWager == head.recentWager)
       case _ => false
     }
   }
+
+  private def highestWager: Int = involvedStacks.foldLeft(0) { (wager, stack) =>
+    if (wager > stack.recentWager)
+      wager
+    else
+      stack.recentWager
+  }
+
+  private def toAct: Stack = stacks get turnToAct
 
   // def PotDistribution distributeOne()
   // def List[PotDistribution] distributeAll(List[HandValueMagic] handValues)
