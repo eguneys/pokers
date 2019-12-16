@@ -7,10 +7,15 @@ case class Dealer(blinds: Int,
   allowRaiseUntil: StackIndex,
   lastFullRaise: Int,
   // sidePots: List[Pot],
-  stacks: List[Stack]) {
+  stacks: Vector[Stack]) {
 
   lazy val SB: StackIndex = (button + 1) % stacks.length
   lazy val BB: StackIndex = (SB + 1) % stacks.length
+
+  private def nextInvolvedAfter(after: StackIndex): StackIndex = (after + 1) % stacks.length
+
+  def nextToAct: StackIndex = nextInvolvedAfter(turnToAct)
+  def firstToAct: StackIndex = nextInvolvedAfter(button)
 
   def newAllIns: Int = stacks count(_ is NewAllIn)
   def oldAllIns: Int = stacks count(_ is OldAllIn)
@@ -23,12 +28,12 @@ case class Dealer(blinds: Int,
   def oneInvolved = involveds == 1
   def allInsExists = allIns > 0
 
-  def involvedStacks: List[Stack] = stacks.filter(_ is Involved)
+  def involvedStacks: Vector[Stack] = stacks.filter(_ is Involved)
 
-  def allActed: Boolean = stacks forall(!_.lastAction.isDefined)
+  def allActed: Boolean = stacks forall(_.lastAction.isDefined)
   def wagersEqualized: Boolean = {
     involvedStacks match {
-      case head :: tail => 
+      case head +: tail => 
         tail.forall(_.recentWager == head.recentWager)
       case _ => false
     }
@@ -41,17 +46,26 @@ case class Dealer(blinds: Int,
       stack.recentWager
   }
 
-  private def toAct: Stack = stacks get turnToAct
+  private def toCall: Int = highestWager - toAct.recentWager
+
+  private def toAct: Stack = stacks(turnToAct)
+
+  private def updateToAct(f : Stack => Option[Stack]): Option[Dealer] = f(toAct) map { stack => copy(
+    stacks = stacks.updated(turnToAct, stack)
+  )}
 
   // def PotDistribution distributeOne()
   // def List[PotDistribution] distributeAll(List[HandValueMagic] handValues)
 
-    // def Option[Dealer] nextRound()
-    // def Option[Dealer] nextTurn()
+  def nextRound: Dealer = copy(
+    round = round.next,
+    turnToAct = firstToAct)
+
+  def nextTurn: Dealer = copy(turnToAct = nextToAct)
 
 
   def call(): Option[Dealer] = {
-    Some(this)
+    updateToAct(_.call(toCall))
   }
 
   def check() :Option[Dealer] = {
@@ -59,7 +73,11 @@ case class Dealer(blinds: Int,
   }
 
   def raise(to: Int): Option[Dealer] = {
-    Some(this)
+    if (to < lastFullRaise)
+      None
+    else {
+      updateToAct(_.raise(to, toCall))
+    }
   }
 
   // def Option[Dealer] fold()
@@ -84,8 +102,8 @@ case object Dealer {
     val lastFullRaise = blinds;
 
     val stacks = iStacks.zipWithIndex.map({
-      case (stack, i) if i == sb  => Stack(Involved, stack, blinds / 2, None)
-      case (stack, i) if i == bb => Stack(Involved, stack, blinds, None)
+      case (stack, i) if i == sb  => Stack(Involved, stack - blinds / 2, blinds / 2, None)
+      case (stack, i) if i == bb => Stack(Involved, stack - blinds, blinds, None)
       case (stack, _) => Stack(Involved, stack, 0, None)
     })
 
@@ -95,7 +113,7 @@ case object Dealer {
       toAct,
       allowRaiseUntil,
       lastFullRaise,
-      stacks)
+      stacks.toVector)
   }
 
 }

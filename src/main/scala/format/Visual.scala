@@ -17,11 +17,25 @@ object Visual {
 
   private val StackPattern = "(I|F|O|N) (\\d+) (\\d+) (\\.|\\w+)".r
 
+
+  private val ActPattern = "(CA|CH|FO|RR|AA)(\\d*)".r
+
+  private def readAct(str: String) = str match {
+    case ActPattern(act, "") =>
+      PlayerAct.forsyth(act).get
+    case ActPattern(act, raise) => RegularRaise(raise.toInt)
+  }
+
+  private def writeAct(act: PlayerAct) = act match {
+    case r@RegularRaise(amount) => r.uci + amount
+    case act => act.uci
+  }
+
   def readStack(source: String): Stack = source match {
     case StackPattern(role, stack, recentWager, ".") =>
       Stack(StackRole forsyth role.charAt(0) get, stack.toInt, recentWager.toInt, None)
     case StackPattern(role, stack, recentWager, lastAction) =>
-      Stack(StackRole forsyth role.charAt(0) get, stack.toInt, recentWager.toInt, None)
+      Stack(StackRole forsyth role.charAt(0) get, stack.toInt, recentWager.toInt, Some(readAct(lastAction)))
   }
 
   def writeStack(stack: Stack): String = {
@@ -46,7 +60,7 @@ object Visual {
         toAct.toInt,
         allowRaiseUntil.toInt,
         lastFullRaise.toInt,
-        stacks
+        stacks.toVector
       )
     }
   }

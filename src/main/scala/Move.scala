@@ -12,6 +12,16 @@ case class Move(
 
   def situationAfter = Situation(finalizeAfter)
 
-  def finalizeAfter: Dealer = after
+  def finalizeAfter: Dealer = {
+    val iSituation = Situation(after)
+
+    if (iSituation.nextTurn) {
+      after.nextTurn
+    } else if (iSituation.nextRound) {
+      after.nextRound
+    } else {
+      after
+    }
+  }
 
 }

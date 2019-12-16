@@ -9,7 +9,10 @@ case class Game(
     }
 
   def apply(move: Move): Game = {
-    this
+    val newSituation = move.situationAfter
+
+    copy(
+      situation = newSituation)
   }
 
   def dealer = situation.dealer

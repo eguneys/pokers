@@ -15,19 +15,19 @@ abstract class Raise extends PlayerAct {
 } // ~ RR TR HR PR
 
 case class RegularRaise(to: Int) extends Raise {
-  override val uci = "RR"
+  override val uci = "RR" + to
 }
 
 case class ThirdPotRaise(to: Int) extends Raise {
-  override val uci = "TR"
+  override val uci = "TR" + to
 }
 
 case class HalfPotRaise(to: Int) extends Raise {
-  override val uci = "HR"
+  override val uci = "HR" + to
 }
 
 case class PotRaise(to: Int) extends Raise {
-  override  val uci = "PR"
+  override  val uci = "PR" + to
 }
   
 case object Call extends PlayerAct {
