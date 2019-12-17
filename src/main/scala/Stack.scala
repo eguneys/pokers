@@ -5,18 +5,7 @@ case class Stack(role: StackRole, stack: Int, recentWager: Int, lastAction: Opti
 
   def is(t: StackRole) = role == t
 
-  def allin(toCall: Int, lastFullRaise: Int): Option[Stack] = {
-    val total = stack
-    val newStack = 0
-    val newWager = recentWager + total
-
-    val allInAct = if (total < toCall)
-      AllInCall
-    else if ((total - toCall) < lastFullRaise)
-      AllInHalfRaise
-    else
-      AllInFullRaise
-
+  def allin(newStack: Int, newWager: Int, allInAct: PlayerAct): Option[Stack] = {
     Some(copy(NewAllIn, newStack, newWager, Some(allInAct)))
   }
 

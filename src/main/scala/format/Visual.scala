@@ -2,10 +2,10 @@ package poker
 package format
 
 
-// blinds bettingRound button turnToAct allowRaiseUntil lastFullRaise!runningPot~sidePot
+// blinds bettingRound button turnToAct lastFullRaise!runningPot~sidePot
 // role stack recentWager lastAction|. 
 
-// 100 (P|F|T|R) 0 0 0 100!100 0 1 2 3~50 0 1 2
+// 100 (P|F|T|R) 0 0 100!100 0 1 2 3~50 0 1 2
 // (I|F|O|N) 100 10 CA
 // I 100 10 RR200
 // I 100 10 .
@@ -13,7 +13,7 @@ package format
 
 object Visual {
 
-  private val HeaderPattern = "(\\d+) (P|F|T|R) (\\d) (\\d) (\\d) (\\d+)".r
+  private val HeaderPattern = "(\\d+) (P|F|T|R) (\\d) (\\d) (\\d+)".r
 
   private val StackPattern = "(I|F|O|N) (\\d+) (\\d+) (\\.|\\w+)".r
 
@@ -53,12 +53,11 @@ object Visual {
 
 
     headerS match {
-      case HeaderPattern(blinds, round, button, toAct, allowRaiseUntil, lastFullRaise) => Dealer(
+      case HeaderPattern(blinds, round, button, toAct, lastFullRaise) => Dealer(
         blinds.toInt,
         BettingRound forsyth round.charAt(0) get,
         button.toInt,
         toAct.toInt,
-        allowRaiseUntil.toInt,
         lastFullRaise.toInt,
         stacks.toVector
       )
@@ -71,7 +70,7 @@ object Visual {
     val stacks = dealer.stacks.map (writeStack) mkString "\n"
     val pots = ""
 
-    dealer.blinds + " " + dealer.round.forsyth + " " + dealer.button + " " + dealer.turnToAct + " " + dealer.allowRaiseUntil + " " + dealer.lastFullRaise + "!" + pots + "\n" + stacks
+    dealer.blinds + " " + dealer.round.forsyth + " " + dealer.button + " " + dealer.turnToAct + " " + dealer.lastFullRaise + "!" + pots + "\n" + stacks
   }
 
   def addNewLines(str: String) = "\n" + str + "\n"

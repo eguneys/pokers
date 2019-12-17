@@ -4,7 +4,6 @@ case class Dealer(blinds: Int,
   round: BettingRound,
   button: StackIndex,
   turnToAct: StackIndex,
-  allowRaiseUntil: StackIndex,
   lastFullRaise: Int,
   // sidePots: List[Pot],
   stacks: Vector[Stack]) {
@@ -79,7 +78,10 @@ case class Dealer(blinds: Int,
     if (to < lastFullRaise)
       None
     else {
-      updateToAct(_.raise(to, toCall))
+      for {
+        d1 <- updateToAct(_.raise(to, toCall))
+        d2 = d1.copy(lastFullRaise = to)
+      } yield d2
     }
   }
 
@@ -88,7 +90,29 @@ case class Dealer(blinds: Int,
   }
 
   def allin(): Option[Dealer] = {
-    updateToAct(_.allin(toCall, lastFullRaise))
+
+    val total = toAct.stack
+    val newStack = 0
+    val newWager = toAct.recentWager + total
+
+    val raiseTo = total - toCall
+
+    val allInAct = if (total < toCall)
+      AllInCall
+    else if (raiseTo < lastFullRaise)
+      AllInHalfRaise
+    else
+      AllInFullRaise
+
+    val newLastFullRaise = if (allInAct == AllInFullRaise)
+      raiseTo
+    else
+      lastFullRaise
+
+    for {
+      d1 <- updateToAct(_.allin(newStack, newWager, allInAct))
+      d2 = d1.copy(lastFullRaise = newLastFullRaise)
+    } yield d2
   }
 
   def visual = format.Visual >> this
@@ -107,7 +131,6 @@ case object Dealer {
     val sb = (button + 1) % sl;
     val bb = (sb + 1) % sl;
     val toAct = (bb + 1) % sl;
-    val allowRaiseUntil = bb;
     val lastFullRaise = blinds;
 
     val stacks = iStacks.zipWithIndex.map({
@@ -120,7 +143,6 @@ case object Dealer {
       Preflop,
       button,
       toAct,
-      allowRaiseUntil,
       lastFullRaise,
       stacks.toVector)
   }
