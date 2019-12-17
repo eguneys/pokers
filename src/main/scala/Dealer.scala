@@ -69,7 +69,10 @@ case class Dealer(blinds: Int,
   }
 
   def check() :Option[Dealer] = {
-    None
+    if (toCall != 0)
+      None
+    else
+      updateToAct(_.check())
   }
 
   def raise(to: Int): Option[Dealer] = {
@@ -80,11 +83,17 @@ case class Dealer(blinds: Int,
     }
   }
 
-  // def Option[Dealer] fold()
+  def fold(): Option[Dealer] = {
+    updateToAct(_.fold())
+  }
 
-  // def Option[Dealer] allin()
+  def allin(): Option[Dealer] = {
+    updateToAct(_.allin(toCall, lastFullRaise))
+  }
 
   def visual = format.Visual >> this
+
+  override def toString = visual
 
 }
 

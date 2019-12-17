@@ -37,6 +37,10 @@ trait PokerTest extends Specification with ValidationMatchers {
     case g => g.dealer.visual must_== (Visual << visual).visual
   }
 
+  def beDealer(visual: String): Matcher[Option[Dealer]] = beSome.like {
+    case d => Visual.addNewLines(d.visual) must_== visual
+  }
+
 
 }
 
