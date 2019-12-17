@@ -17,7 +17,6 @@ At the end of a betting round, players that went all-in create side pots. A side
 
         StackIndex button
         StackIndex turnToAct
-        StackIndex allowRaiseUntil
         Int lastFullRaise
 
         List[Pot] sidePots
@@ -159,10 +158,10 @@ Situation(
 
 Dealer Visual - Fen
 
-     blinds bettingRound button turnToAct allowRaiseUntil lastFullRaise!runningPot~sidePot
+     blinds bettingRound button turnToAct lastFullRaise!runningPot~sidePot
      role stack recentWager lastAction|. 
 
-     100 (P|F|T|R) 0 0 0 100!100 0 1 2 3~50 0 1 2
+     100 (P|F|T|R) 0 0 100!100 0 1 2 3~50 0 1 2
      (I|F|O|N) 100 10 CA
      I 100 10 RR200
      I 100 10 .

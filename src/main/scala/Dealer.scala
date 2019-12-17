@@ -75,7 +75,7 @@ case class Dealer(blinds: Int,
   }
 
   def raise(to: Int): Option[Dealer] = {
-    if (to < lastFullRaise)
+    if (to < lastFullRaise || toCall < lastFullRaise)
       None
     else {
       for {

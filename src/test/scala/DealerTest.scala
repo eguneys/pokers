@@ -175,6 +175,43 @@ I 700 100 .
 """)
       }
     }
+
+    "allow raise when facing a full raise" in {
+
+          val dealer = Visual << """
+100 F 0 0 100!
+I 250 100 RR100
+N 0 125 AA
+I 200 125 CA
+N 0 200 AA
+I 200 200 CA
+"""
+
+      dealer.raise(100) must beDealer("""
+100 F 0 0 100!
+I 50 300 RR100
+N 0 125 AA
+I 200 125 CA
+N 0 200 AA
+I 200 200 CA
+""")
+
+    }
+
+    "dont allow raise when not facing a full raise" in {
+
+          val dealer = Visual << """
+100 F 0 2 100!
+I 50 200 CA
+N 0 125 AA
+I 200 125 CA
+N 0 200 AA
+I 200 200 CA
+"""
+
+      dealer.raise(100) must beNone
+
+    }
   }
 
 }
