@@ -5,6 +5,8 @@ case class Stack(role: StackRole, stack: Int, recentWager: Int, lastAction: Opti
 
   def is(t: StackRole) = role == t
 
+  def acted: Boolean = lastAction.isDefined
+
   def allin(newStack: Int, newWager: Int, allInAct: PlayerAct): Option[Stack] = {
     Some(copy(NewAllIn, newStack, newWager, Some(allInAct)))
   }

@@ -11,7 +11,9 @@ case class Dealer(blinds: Int,
   lazy val SB: StackIndex = (button + 1) % stacks.length
   lazy val BB: StackIndex = (SB + 1) % stacks.length
 
-  private def nextInvolvedAfter(after: StackIndex): StackIndex = (after + 1) % stacks.length
+  private def nextInvolvedAfter(after: StackIndex): StackIndex = {
+    (stacks.zipWithIndex.drop(after + 1) ++ stacks.zipWithIndex).find(_._1.is(Involved)).get._2
+  }
 
   def nextToAct: StackIndex = nextInvolvedAfter(turnToAct)
   def firstToAct: StackIndex = nextInvolvedAfter(button)
@@ -27,6 +29,7 @@ case class Dealer(blinds: Int,
   def oneInvolved = involveds == 1
   def allInsExists = allIns > 0
 
+  def nonFoldStacks: Vector[Stack] = stacks.filterNot(_ is Folded)
   def involvedStacks: Vector[Stack] = stacks.filter(_ is Involved)
 
   def allActed: Boolean = stacks forall(_.lastAction.isDefined)
@@ -38,7 +41,7 @@ case class Dealer(blinds: Int,
     }
   }
 
-  private def highestWager: Int = involvedStacks.foldLeft(0) { (wager, stack) =>
+  private def highestWager: Int = nonFoldStacks.foldLeft(0) { (wager, stack) =>
     if (wager > stack.recentWager)
       wager
     else
@@ -75,7 +78,7 @@ case class Dealer(blinds: Int,
   }
 
   def raise(to: Int): Option[Dealer] = {
-    if (to < lastFullRaise || toCall < lastFullRaise)
+    if (to < lastFullRaise || (toAct.acted && toCall < lastFullRaise))
       None
     else {
       for {

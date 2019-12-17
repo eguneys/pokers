@@ -18,7 +18,7 @@ object Visual {
   private val StackPattern = "(I|F|O|N) (\\d+) (\\d+) (\\.|\\w+)".r
 
 
-  private val ActPattern = "(CA|CH|FO|RR|AA)(\\d*)".r
+  private val ActPattern = "(CA|CH|FO|RR|AA|AC|AH|AF)(\\d*)".r
 
   private def readAct(str: String) = str match {
     case ActPattern(act, "") =>
