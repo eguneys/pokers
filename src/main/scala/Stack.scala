@@ -44,4 +44,9 @@ case class Stack(role: StackRole, stack: Int, recentWager: Int, lastAction: Opti
   def check(): Option[Stack] = {
     Some(copy(lastAction = Some(Check)))
   }
+
+  def nextRound: Stack = if (role == NewAllIn)
+    copy(role = OldAllIn)
+  else
+    this
 }

@@ -61,7 +61,8 @@ case class Dealer(blinds: Int,
 
   def nextRound: Dealer = copy(
     round = round.next,
-    turnToAct = firstToAct)
+    turnToAct = firstToAct,
+    stacks = stacks.map(_.nextRound))
 
   def nextTurn: Dealer = copy(turnToAct = nextToAct)
 

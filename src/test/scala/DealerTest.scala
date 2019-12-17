@@ -252,6 +252,27 @@ I 200 200 CA
 """)
     }
 
+
+    "have next round" in {
+      val dealer = Visual << """
+100 F 0 0 100!
+I 50 200 CA
+N 0 125 AA
+I 200 125 CA
+N 0 200 AA
+I 200 200 CA
+"""
+
+      Some(dealer.nextRound) must beDealer("""
+100 T 0 2 100!
+I 50 200 CA
+O 0 125 AA
+I 200 125 CA
+O 0 200 AA
+I 200 200 CA
+""")
+    }
+
   }
 
 }
