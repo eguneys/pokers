@@ -59,12 +59,24 @@ case class Dealer(blinds: Int,
 
   private def collectPots: Dealer = {
 
-    def sliceAndBuildPot(wagers: List[(Int, StackIndex)], sidePots: List[Pot], runningPotWager: Int = 0): List[Pot] = wagers match {
+    def sliceAndBuildPot(foldeds: List[Int], wagers: List[(Int, StackIndex)], sidePots: List[Pot], runningPotWager: Int = 0): List[Pot] = wagers match {
       case (0, i) :: tail => sidePots
       case (wager, i) :: tail => {
-        val newPot = Pot(runningPotWager + wager * (tail.length + 1), (i +: tail.map(_._2)).sorted)
+
+        val lessFoldeds = foldeds.filter(_ <= wager)
+        val moreFoldeds = foldeds.filterNot(_ <= wager)
+
+        val newFoldeds = moreFoldeds.map(_ - wager)
+
+        val foldedWager = lessFoldeds.sum + wager * moreFoldeds.length
+
+        val newPot = Pot(
+          foldedWager +
+          runningPotWager +
+          wager * (tail.length + 1), 
+          (i +: tail.map(_._2)).sorted)
         val newWagers = tail.map(t => t._1 - wager -> t._2)
-        sliceAndBuildPot(newWagers, newPot +: sidePots)
+        sliceAndBuildPot(newFoldeds, newWagers, newPot +: sidePots)
       }
       case _ => sidePots
     }
@@ -80,13 +92,13 @@ case class Dealer(blinds: Int,
       .map(t => t._1.recentWager -> t._2)
       .toList
 
-    val pots = sliceAndBuildPot(newAllins ++ involveds, Nil, runningPot.wager)
+    val foldeds = stacks
+      .filter(s => s.is(Folded) && s.recentWager > 0)
+      .map(_.recentWager)
+      .sorted
+      .toList
 
-    // println(sliceAndBuildPot(newAllins ++ involveds, Nil))
-
-    // val involvedIndexes = stacks.zipWithIndex.filter(_._1 is Involved).map(_._2).toList
-
-    // val runningPot = Pot(0, involvedIndexes)
+    val pots = sliceAndBuildPot(foldeds, newAllins ++ involveds, Nil, runningPot.wager)
 
     val newRunningPot = pots.head
     val newSidePots = pots.tail

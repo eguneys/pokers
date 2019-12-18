@@ -273,9 +273,12 @@ I 200 0 .
 """)
     }
 
-    "have pots after next round" in {
 
-      val dealer = Visual << """
+    "have pots" in {
+
+      "have pots after next round" in {
+
+        val dealer = Visual << """
 10 F 0 4 10!0 0 1 2 3 4
 N 0 100 AF
 N 0 75 AC
@@ -284,7 +287,7 @@ N 0 25 AC
 I 25 100 CA
 """
 
-      Some(dealer.endRound) must beDealer("""
+        Some(dealer.endRound) must beDealer("""
 10 F 0 4 10!50 0 4~75 0 1 4~100 0 1 2 4~125 0 1 2 3 4
 O 0 0 .
 O 0 0 .
@@ -293,11 +296,11 @@ O 0 0 .
 I 25 0 .
 """)
 
-    }
+      }
 
-    "have pots after next round with more involved" in {
+      "have pots after next round with more involved" in {
 
-      val dealer = Visual << """
+        val dealer = Visual << """
 10 F 0 4 10!0 0 1 2 3 4
 N 0 100 AF
 N 0 75 AC
@@ -307,7 +310,7 @@ I 25 120 RR20
 I 25 120 CA
 """
 
-      Some(dealer.nextRound) must beDealer("""
+        Some(dealer.nextRound) must beDealer("""
 10 T 0 4 10!40 4 5~75 0 4 5~100 0 1 4 5~125 0 1 2 4 5~150 0 1 2 3 4 5
 O 0 0 .
 O 0 0 .
@@ -317,11 +320,11 @@ I 25 0 .
 I 25 0 .
 """)
 
-    }
+      }
 
-    "have pots accumulate running pot" in {
+      "have pots accumulate running pot" in {
 
-      val dealer = Visual << """
+        val dealer = Visual << """
 10 F 0 4 10!100 0 1 2 3 4
 N 0 100 AF
 N 0 75 AC
@@ -331,7 +334,7 @@ I 25 120 RR20
 I 25 120 CA
 """
 
-      Some(dealer.nextRound) must beDealer("""
+        Some(dealer.nextRound) must beDealer("""
 10 T 0 4 10!40 4 5~75 0 4 5~100 0 1 4 5~125 0 1 2 4 5~250 0 1 2 3 4 5
 O 0 0 .
 O 0 0 .
@@ -340,6 +343,64 @@ O 0 0 .
 I 25 0 .
 I 25 0 .
 """)
+
+      }
+
+
+      "have pots accumulate running pot with folded stacks" in {
+
+        val dealer = Visual << """
+10 F 0 4 10!100 0 1 2 3 4
+N 0 100 AF
+N 0 75 AC
+N 0 50 AC
+N 0 25 AC
+I 25 120 RR20
+I 25 120 CA
+F 25 80 FO
+"""
+
+        Some(dealer.nextRound) must beDealer("""
+10 T 0 4 10!40 4 5~80 0 4 5~125 0 1 4 5~150 0 1 2 4 5~275 0 1 2 3 4 5
+O 0 0 .
+O 0 0 .
+O 0 0 .
+O 0 0 .
+I 25 0 .
+I 25 0 .
+F 25 0 .
+""")
+
+      }
+
+      "have pots accumulate running pot with two folded stacks" in {
+
+        val dealer = Visual << """
+10 F 0 4 10!100 0 1 2 3 4
+N 0 100 AF
+N 0 75 AC
+N 0 50 AC
+N 0 25 AC
+I 25 120 RR20
+I 25 120 CA
+F 25 80 FO
+F 25 110 FO
+"""
+
+        Some(dealer.nextRound) must beDealer("""
+10 T 0 4 10!50 4 5~105 0 4 5~150 0 1 4 5~175 0 1 2 4 5~300 0 1 2 3 4 5
+O 0 0 .
+O 0 0 .
+O 0 0 .
+O 0 0 .
+I 25 0 .
+I 25 0 .
+F 25 0 .
+F 25 0 .
+""")
+
+      }
+
 
     }
 
