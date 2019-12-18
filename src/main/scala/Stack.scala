@@ -45,8 +45,12 @@ case class Stack(role: StackRole, stack: Int, recentWager: Int, lastAction: Opti
     Some(copy(lastAction = Some(Check)))
   }
 
-  def nextRound: Stack = if (role == NewAllIn)
-    copy(role = OldAllIn)
-  else
-    this
+  def collectWager: Stack = {
+    val s1 = if (role == NewAllIn)
+      copy(role = OldAllIn)
+    else
+      this
+
+    s1.copy(recentWager = 0, lastAction = None)
+  }
 }

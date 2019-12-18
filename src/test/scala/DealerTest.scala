@@ -35,7 +35,7 @@ class DealerTest extends PokerTest {
 
       "allow raise at least last full raise" in {
         dealer.raise(100) must beDealer("""
-100 P 0 0 100!
+100 P 0 0 100!0 0 1 2
 I 800 200 RR100
 I 950 50 .
 I 700 100 .
@@ -45,7 +45,7 @@ I 700 100 .
       "not allow call more than stack" in {
 
         val dealer= Visual << """
-100 P 0 2 100!
+100 P 0 2 100!0 0 1 2
 I 800 800 RR800
 I 950 50 .
 I 700 100 .
@@ -57,7 +57,7 @@ I 700 100 .
       "allow call" in {
 
         val dealer= Visual << """
-100 P 0 2 100!
+100 P 0 2 100!0 0 1 2
 I 800 700 RR700
 I 950 50 .
 I 700 100 .
@@ -65,7 +65,7 @@ I 700 100 .
 
         dealer.call() must beSome.like {
           case d => addNewLines(d.visual) must_== """
-100 P 0 2 100!
+100 P 0 2 100!0 0 1 2
 I 800 700 RR700
 I 950 50 .
 I 100 700 CA
@@ -75,7 +75,7 @@ I 100 700 CA
 
       "not allow check when behind" in {
         val dealer= Visual << """
-100 P 0 2 100!
+100 P 0 2 100!0 0 1 2
 I 800 700 RR700
 I 950 50 .
 I 700 100 .
@@ -87,7 +87,7 @@ I 700 100 .
       "allow check when equal" in {
 
         val dealer= Visual << """
-100 P 0 2 100!
+100 P 0 2 100!0 0 1 2
 I 800 700 RR700
 I 950 50 .
 I 700 700 .
@@ -95,7 +95,7 @@ I 700 700 .
 
         dealer.check must beSome.like {
           case d => addNewLines(d.visual) must_== """
-100 P 0 2 100!
+100 P 0 2 100!0 0 1 2
 I 800 700 RR700
 I 950 50 .
 I 700 700 CH
@@ -105,7 +105,7 @@ I 700 700 CH
 
       "allow fold" in {
         dealer.fold() must beDealer("""
-100 P 0 0 100!
+100 P 0 0 100!0 0 1 2
 F 1000 0 FO
 I 950 50 .
 I 700 100 .
@@ -116,7 +116,7 @@ I 700 100 .
 
         "allow all in full" in {
           dealer.allin() must beDealer("""
-100 P 0 0 900!
+100 P 0 0 900!0 0 1 2
 N 0 1000 AF
 I 950 50 .
 I 700 100 .
@@ -125,14 +125,14 @@ I 700 100 .
 
         "allow all in half" in {
           val dealer = Visual << """
-100 P 0 1 100!
+100 P 0 1 100!0 0 1 2
 I 150 200 RR100
 I 200 50 .
 I 700 100 .
 """
 
           dealer.allin() must beDealer("""
-100 P 0 1 100!
+100 P 0 1 100!0 0 1 2
 I 150 200 RR100
 N 0 250 AH
 I 700 100 .
@@ -142,14 +142,14 @@ I 700 100 .
 
         "allow all in call" in {
           val dealer = Visual << """
-100 P 0 1 100!
+100 P 0 1 100!0 0 1 2
 I 150 200 RR100
 I 100 50 .
 I 700 100 .
 """
 
           dealer.allin() must beDealer("""
-100 P 0 1 100!
+100 P 0 1 100!0 0 1 2
 I 150 200 RR100
 N 0 150 AC
 I 700 100 .
@@ -166,7 +166,7 @@ I 700 100 .
       "full raise" in {
 
         dealer.raise(250) must beDealer("""
-100 P 0 0 250!
+100 P 0 0 250!0 0 1 2
 I 650 350 RR250
 I 950 50 .
 I 700 100 .
@@ -177,7 +177,7 @@ I 700 100 .
     "allow raise when facing a full raise" in {
 
           val dealer = Visual << """
-100 F 0 0 100!
+100 F 0 0 100!0 0 1 2 3 4
 I 250 100 RR100
 N 0 125 AA
 I 200 125 CA
@@ -186,7 +186,7 @@ I 200 200 CA
 """
 
       dealer.raise(100) must beDealer("""
-100 F 0 0 100!
+100 F 0 0 100!0 0 1 2 3 4
 I 50 300 RR100
 N 0 125 AA
 I 200 125 CA
@@ -198,7 +198,7 @@ I 200 200 CA
 
     "allow raise when not facing a full raise but hasn't acted" in {
           val dealer = Visual << """
-4000 P 2 4 4000!
+4000 P 2 4 4000!0 0 1 2 3 4
 I 1000 4000 CA
 F 1000 0 FO
 N 0 7500 AH
@@ -207,7 +207,7 @@ I 16000 4000 .
 """
 
       dealer.raise(4000) must beDealer("""
-4000 P 2 4 4000!
+4000 P 2 4 4000!0 0 1 2 3 4
 I 1000 4000 CA
 F 1000 0 FO
 N 0 7500 AH
@@ -219,7 +219,7 @@ I 8500 11500 RR4000
     "dont allow raise when not facing a full raise" in {
 
           val dealer = Visual << """
-100 F 0 2 100!
+100 F 0 2 100!0 0 1 2 3 4
 I 50 200 CA
 N 0 125 AA
 I 200 125 CA
@@ -234,7 +234,7 @@ I 200 200 CA
 
     "have next turn" in {
       val dealer = Visual << """
-100 F 0 0 100!
+100 F 0 0 100!0 0 1 2 3 4
 I 50 200 CA
 N 0 125 AA
 I 200 125 CA
@@ -243,7 +243,7 @@ I 200 200 CA
 """
 
       Some(dealer.nextTurn) must beDealer("""
-100 F 0 2 100!
+100 F 0 2 100!0 0 1 2 3 4
 I 50 200 CA
 N 0 125 AA
 I 200 125 CA
@@ -255,22 +255,92 @@ I 200 200 CA
 
     "have next round" in {
       val dealer = Visual << """
-100 F 0 0 100!
+100 F 0 0 100!0 0 1 2 3 4
 I 50 200 CA
 N 0 125 AA
-I 200 125 CA
+I 200 200 CA
 N 0 200 AA
 I 200 200 CA
 """
 
       Some(dealer.nextRound) must beDealer("""
-100 T 0 2 100!
-I 50 200 CA
-O 0 125 AA
-I 200 125 CA
-O 0 200 AA
-I 200 200 CA
+100 T 0 2 100!300 0 2 3 4~625 0 1 2 3 4
+I 50 0 .
+O 0 0 .
+I 200 0 .
+O 0 0 .
+I 200 0 .
 """)
+    }
+
+    "have pots after next round" in {
+
+      val dealer = Visual << """
+10 F 0 4 10!0 0 1 2 3 4
+N 0 100 AF
+N 0 75 AC
+N 0 50 AC
+N 0 25 AC
+I 25 100 CA
+"""
+
+      Some(dealer.endRound) must beDealer("""
+10 F 0 4 10!50 0 4~75 0 1 4~100 0 1 2 4~125 0 1 2 3 4
+O 0 0 .
+O 0 0 .
+O 0 0 .
+O 0 0 .
+I 25 0 .
+""")
+
+    }
+
+    "have pots after next round with more involved" in {
+
+      val dealer = Visual << """
+10 F 0 4 10!0 0 1 2 3 4
+N 0 100 AF
+N 0 75 AC
+N 0 50 AC
+N 0 25 AC
+I 25 120 RR20
+I 25 120 CA
+"""
+
+      Some(dealer.nextRound) must beDealer("""
+10 T 0 4 10!40 4 5~75 0 4 5~100 0 1 4 5~125 0 1 2 4 5~150 0 1 2 3 4 5
+O 0 0 .
+O 0 0 .
+O 0 0 .
+O 0 0 .
+I 25 0 .
+I 25 0 .
+""")
+
+    }
+
+    "have pots accumulate running pot" in {
+
+      val dealer = Visual << """
+10 F 0 4 10!100 0 1 2 3 4
+N 0 100 AF
+N 0 75 AC
+N 0 50 AC
+N 0 25 AC
+I 25 120 RR20
+I 25 120 CA
+"""
+
+      Some(dealer.nextRound) must beDealer("""
+10 T 0 4 10!40 4 5~75 0 4 5~100 0 1 4 5~125 0 1 2 4 5~250 0 1 2 3 4 5
+O 0 0 .
+O 0 0 .
+O 0 0 .
+O 0 0 .
+I 25 0 .
+I 25 0 .
+""")
+
     }
 
   }

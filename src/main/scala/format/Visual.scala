@@ -17,7 +17,6 @@ object Visual {
 
   private val StackPattern = "(I|F|O|N) (\\d+) (\\d+) (\\.|\\w+)".r
 
-
   private val ActPattern = "(CA|CH|FO|RR|AA|AC|AH|AF)(\\d*)".r
 
   private def readAct(str: String) = str match {
@@ -42,14 +41,30 @@ object Visual {
     stack.role.forsyth + " " + stack.stack + " " + stack.recentWager + " " + stack.lastAction.map(_.uci).getOrElse(".")
   }
 
+  def readPot(source: String): Pot = {
+    val header = source.split(' ')
+
+    val wager = header.head.toInt
+    val involved = header.tail.map(_.toInt).toList
+
+    Pot(wager, involved)
+  }
+
+  def writePot(pot: Pot): String = {
+    pot.wager +: pot.involved mkString " "
+  }
+
   def <<(source: String): Dealer = {
     val lines = source.trim.lines.toList
 
     val headerPots = lines.head.split('!')
     val headerS = headerPots.head
-    // val pots = headerPots.drop(1).head.split('~').map(readPot)
+    val pots = headerPots.drop(1).head.split('~').map(readPot).toList
 
     val stacks = lines.tail.map(readStack)
+
+    val runningPot = pots.head
+    val sidePots = pots.tail
 
 
     headerS match {
@@ -59,7 +74,9 @@ object Visual {
         button.toInt,
         toAct.toInt,
         lastFullRaise.toInt,
-        stacks.toVector
+        stacks.toVector,
+        runningPot,
+        sidePots
       )
     }
   }
@@ -68,7 +85,7 @@ object Visual {
   def >>(dealer: Dealer): String = {
 
     val stacks = dealer.stacks.map (writeStack) mkString "\n"
-    val pots = ""
+    val pots = (dealer.runningPot +: dealer.sidePots).map(writePot) mkString "~"
 
     dealer.blinds + " " + dealer.round.forsyth + " " + dealer.button + " " + dealer.turnToAct + " " + dealer.lastFullRaise + "!" + pots + "\n" + stacks
   }

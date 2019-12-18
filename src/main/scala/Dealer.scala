@@ -5,8 +5,9 @@ case class Dealer(blinds: Int,
   button: StackIndex,
   turnToAct: StackIndex,
   lastFullRaise: Int,
-  // sidePots: List[Pot],
-  stacks: Vector[Stack]) {
+  stacks: Vector[Stack],
+  runningPot: Pot,
+  sidePots: List[Pot]) {
 
   lazy val SB: StackIndex = (button + 1) % stacks.length
   lazy val BB: StackIndex = (SB + 1) % stacks.length
@@ -56,16 +57,61 @@ case class Dealer(blinds: Int,
     stacks = stacks.updated(turnToAct, stack)
   )}
 
+  private def collectPots: Dealer = {
+
+    def sliceAndBuildPot(wagers: List[(Int, StackIndex)], sidePots: List[Pot], runningPotWager: Int = 0): List[Pot] = wagers match {
+      case (0, i) :: tail => sidePots
+      case (wager, i) :: tail => {
+        val newPot = Pot(runningPotWager + wager * (tail.length + 1), (i +: tail.map(_._2)).sorted)
+        val newWagers = tail.map(t => t._1 - wager -> t._2)
+        sliceAndBuildPot(newWagers, newPot +: sidePots)
+      }
+      case _ => sidePots
+    }
+
+    val newAllins = stacks.zipWithIndex
+      .filter(_._1 is NewAllIn)
+      .map(t => t._1.recentWager -> t._2)
+      .sortBy(_._1)
+      .toList
+
+    val involveds = stacks.zipWithIndex
+      .filter(_._1 is Involved)
+      .map(t => t._1.recentWager -> t._2)
+      .toList
+
+    val pots = sliceAndBuildPot(newAllins ++ involveds, Nil, runningPot.wager)
+
+    // println(sliceAndBuildPot(newAllins ++ involveds, Nil))
+
+    // val involvedIndexes = stacks.zipWithIndex.filter(_._1 is Involved).map(_._2).toList
+
+    // val runningPot = Pot(0, involvedIndexes)
+
+    val newRunningPot = pots.head
+    val newSidePots = pots.tail
+
+    copy(runningPot = newRunningPot,
+      sidePots = newSidePots)
+  }
+
   // def PotDistribution distributeOne()
   // def List[PotDistribution] distributeAll(List[HandValueMagic] handValues)
 
-  def nextRound: Dealer = copy(
-    round = round.next,
-    turnToAct = firstToAct,
-    stacks = stacks.map(_.nextRound))
+  def endRound: Dealer = {
+    collectPots.copy(
+      stacks = stacks.map(_.collectWager)
+    )
+  }
+
+  def nextRound: Dealer = {
+    collectPots.copy(
+      round = round.next,
+      turnToAct = firstToAct,
+      stacks = stacks.map(_.collectWager))
+  }
 
   def nextTurn: Dealer = copy(turnToAct = nextToAct)
-
 
   def call(): Option[Dealer] = {
     updateToAct(_.call(toCall))
@@ -143,12 +189,16 @@ case object Dealer {
       case (stack, _) => Stack(Involved, stack, 0, None)
     })
 
+    val runningPot = Pot(0, stacks.zipWithIndex.map(_._2))
+
     Dealer(blinds,
       Preflop,
       button,
       toAct,
       lastFullRaise,
-      stacks.toVector)
+      stacks.toVector,
+      runningPot,
+      Nil)
   }
 
 }
