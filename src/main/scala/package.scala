@@ -6,4 +6,6 @@ package object poker
 
   type StackIndex = Int
 
+  type HandValueMagic = Int
+
 }

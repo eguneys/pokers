@@ -400,8 +400,84 @@ F 25 0 .
 """)
 
       }
+    }
 
+    "distribute pots" in {
 
+      "distribute one" in {
+        val dealer = Visual << """
+10 T 0 4 10!300 0 1 2 3 4 5
+O 0 0 .
+O 0 0 .
+O 0 0 .
+O 0 0 .
+I 25 0 .
+F 25 0 .
+F 25 0 .
+"""
+
+        dealer.distributeOne must_== PotDistribution(300, List(4))
+      }
+
+      "distribute all" in {
+        val dealer = Visual << """
+10 T 0 4 10!50 4 5~105 0 4 5~300 0 1 2 3 4 5
+O 0 0 .
+O 0 0 .
+O 0 0 .
+O 0 0 .
+I 25 0 .
+I 25 0 .
+F 25 0 .
+F 25 0 .
+"""
+
+        dealer.distributeAll(List(1, 2, 3, 4, 5, 6, 7, 8)) must_== List(
+          PotDistribution(50, List(5)),
+          PotDistribution(105, List(5)),
+          PotDistribution(300, List(5))
+        )
+      }
+
+      "distribute all with folded side pots" in {
+        val dealer = Visual << """
+10 T 0 4 10!50 4 5~105 0 4 5 7~300 0 1 2 3 4 5 6 7
+O 0 0 .
+O 0 0 .
+O 0 0 .
+O 0 0 .
+I 25 0 .
+I 25 0 .
+F 25 0 .
+F 25 0 .
+"""
+
+        dealer.distributeAll(List(1, 20, 3, 4, 5, 6, 7, 8)) must_== List(
+          PotDistribution(50, List(5)),
+          PotDistribution(105, List(5)),
+          PotDistribution(300, List(1))
+        )
+      }
+
+      "distribute all with equal hands" in {
+        val dealer = Visual << """
+10 T 0 4 10!50 4 5~105 0 4 5 7~300 0 1 2 3 4 5 6 7
+O 0 0 .
+O 0 0 .
+O 0 0 .
+O 0 0 .
+I 25 0 .
+I 25 0 .
+F 25 0 .
+F 25 0 .
+"""
+
+        dealer.distributeAll(List(1, 200, 3, 4, 56, 56, 7, 8)) must_== List(
+          PotDistribution(50, List(4, 5)),
+          PotDistribution(105, List(4, 5)),
+          PotDistribution(300, List(1))
+        )
+      }
     }
 
   }

@@ -107,8 +107,25 @@ case class Dealer(blinds: Int,
       sidePots = newSidePots)
   }
 
-  // def PotDistribution distributeOne()
-  // def List[PotDistribution] distributeAll(List[HandValueMagic] handValues)
+  def distributeOne(): PotDistribution = {
+    val allPots = runningPot.wager
+    val involved = stacks.zipWithIndex
+      .filter(_._1 is Involved)
+      .map(_._2).toList
+
+    PotDistribution(allPots, involved)
+  }
+
+
+  def distributeAll(handValues: List[HandValueMagic]): List[PotDistribution] = {
+    val allPots = runningPot +: sidePots
+
+    val foldeds = stacks.zipWithIndex
+      .filter(_._1 is Folded)
+      .map(_._2).toList
+
+    allPots.map(_.distribute(handValues, foldeds))
+  }
 
   def endRound: Dealer = {
     collectPots.copy(
