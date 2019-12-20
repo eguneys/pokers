@@ -13,7 +13,7 @@ case class Actor(situation: Situation) {
 
   def validRaise(raise: Raise): Option[Move] = dealer.raise(raise.to) map { move(raise, _) }
 
-  private def move(act: PlayerAct, 
+  private def move(act: PlayerAct,
     after: Dealer) = {
     Move(
       playerAct = act,

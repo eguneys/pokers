@@ -21,6 +21,8 @@ case class Game(
 
 object Game {
 
-  def apply(dealer: Dealer): Game = new Game(Situation(dealer))
+  def apply(dealer: Dealer): Game = Game(dealer, HandDealer.shuffled(dealer.stacks.length))
+
+  def apply(dealer: Dealer, handDealer: HandDealer): Game = new Game(Situation(dealer, handDealer))
 
 }

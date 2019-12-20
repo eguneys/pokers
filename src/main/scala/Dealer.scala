@@ -9,6 +9,9 @@ case class Dealer(blinds: Int,
   runningPot: Pot,
   sidePots: List[Pot]) {
 
+
+  def diff(i: StackIndex): PlayerDiff = stacks(i).diff
+
   lazy val SB: StackIndex = (button + 1) % stacks.length
   lazy val BB: StackIndex = (SB + 1) % stacks.length
 
@@ -125,6 +128,14 @@ case class Dealer(blinds: Int,
       .map(_._2).toList
 
     allPots.map(_.distribute(handValues, foldeds))
+  }
+
+  def showdownWinner(handValues: List[HandValueMagic]): Winners = {
+    Winners(distributeAll(handValues), stacks.map(_.stack).toList)
+  }
+
+  def oneWinner: Winners = {
+    Winners(List(distributeOne()), stacks.map(_.stack).toList)
   }
 
   def endRound: Dealer = {

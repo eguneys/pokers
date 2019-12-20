@@ -2,6 +2,7 @@ package poker
 
 case class Stack(role: StackRole, stack: Int, recentWager: Int, lastAction: Option[PlayerAct]) {
 
+  def diff: PlayerDiff = PlayerDiff(stack, recentWager, role)
 
   def is(t: StackRole) = role == t
 

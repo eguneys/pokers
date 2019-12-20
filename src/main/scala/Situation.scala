@@ -1,6 +1,7 @@
 package poker
 
-case class Situation(dealer: Dealer) {
+case class Situation(dealer: Dealer,
+  handDealer: HandDealer) {
 
   lazy val actor = Actor(this)
 
@@ -11,6 +12,10 @@ case class Situation(dealer: Dealer) {
   lazy val possibleActs: List[PlayerAct] = moves.map(_.playerAct)
 
   lazy val round: BettingRound = dealer.round
+
+  lazy val middle: MiddleCards = handDealer.middle(round)
+
+  lazy val showdownHands: List[Option[Hand]] = handDealer.showdownHands(dealer)
 
   def nextTurn: Boolean = !nextRound && !end
   def nextRound: Boolean = roundEnd && round != River && !end

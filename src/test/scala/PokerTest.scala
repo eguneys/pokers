@@ -10,7 +10,10 @@ import poker.format.{ Visual }
 trait PokerTest extends Specification with ValidationMatchers {
 
 
-  implicit def stringToSituationBuilder(str: String) = Situation(Visual << str)
+  implicit def stringToSituationBuilder(str: String) = {
+    val dealer = Visual << str
+    Situation(dealer, HandDealer.shuffled(dealer.stacks.length))
+  }
 
   def makeDealer(blinds: Int, stacks: List[Int]): Dealer =
     Dealer.empty(blinds, 0, stacks)
