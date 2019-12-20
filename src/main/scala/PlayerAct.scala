@@ -70,4 +70,13 @@ case object PlayerAct {
 
   val allByForsyth = all map { a => a.uci -> a } toMap
 
+  object Raise {
+
+    def forsyth(s: String): Option[Raise] = s.take(2) match {
+      case "RR" => Some(RegularRaise(s.drop(2).toInt))
+      case _ => None
+    }
+
+  }
+
 }

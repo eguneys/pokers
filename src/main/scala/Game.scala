@@ -1,7 +1,10 @@
 package poker
 
+import format.{ Uci }
+
 case class Game(
-  situation: Situation) {
+  situation: Situation,
+  clock: Option[Clock] = None) {
 
   def apply(playerAct: PlayerAct): Valid[(Game, Move)] =
     situation.move(playerAct) map { move =>
@@ -12,7 +15,15 @@ case class Game(
     val newSituation = move.situationAfter
 
     copy(
-      situation = newSituation)
+      situation = newSituation,
+      clock = applyClock)
+  }
+
+  def apply(uci: Uci.Move): Valid[(Game, Move)] = apply(uci.playerAct)
+
+  private def applyClock = clock.map { c =>
+    val newC = c.step
+    if (!newC.isRunning) newC.start else newC
   }
 
   def dealer = situation.dealer
