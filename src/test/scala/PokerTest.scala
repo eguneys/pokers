@@ -44,6 +44,9 @@ trait PokerTest extends Specification with ValidationMatchers {
     case d => Visual.addNewLines(d.visual) must_== visual
   }
 
+  def bePoss(acts: PlayerAct*): Matcher[Valid[Game]] = beSuccess.like {
+    case g => g.situation.possibleActs must contain(exactly(acts:_*))
+  }
 
 }
 

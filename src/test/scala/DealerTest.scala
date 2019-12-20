@@ -480,6 +480,59 @@ F 25 0 .
       }
     }
 
+    "have valid raises" in {
+
+      "pot halfpot thirdpot" in {
+
+        val dealer = Visual << """
+10 F 0 1 10!100 0 1 2
+N 0 30 AF
+I 220 0 .
+I 25 20 CA
+"""
+
+        dealer.validRaises must_== List(
+          PotRaise(180),
+          HalfPotRaise(90),
+          ThirdPotRaise(60)
+        )
+      }
+
+
+      "not enough for pot raise" in {
+
+        val dealer = Visual << """
+10 F 0 1 10!100 0 1 2
+N 0 30 AF
+I 210 0 .
+I 25 20 CA
+"""
+
+        dealer.validRaises must_== List(
+          HalfPotRaise(90),
+          ThirdPotRaise(60)
+        )
+      }
+
+
+
+      "not enough raise for third pot raise" in {
+
+        val dealer = Visual << """
+10 P 0 1 10!0 0 1 2
+N 0 5 AF
+I 300 0 .
+I 25 10 CA
+"""
+
+        dealer.validRaises must_== List(
+          PotRaise(25),
+          HalfPotRaise(12)
+        )
+      }
+
+    }
+
   }
 
 }

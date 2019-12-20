@@ -45,6 +45,18 @@ case class Dealer(blinds: Int,
     }
   }
 
+  def validRaises: List[Raise] = {
+    val recentWagers = stacks.map(_.recentWager).sum
+    val pot = runningPot.wager + recentWagers + toCall
+    val halfPot = pot / 2
+    val thirdPot = pot / 3
+
+    List(PotRaise(pot),
+      HalfPotRaise(halfPot),
+      ThirdPotRaise(thirdPot)
+    ) filter (r => raise(r.to).isDefined)
+  }
+
   private def highestWager: Int = nonFoldStacks.foldLeft(0) { (wager, stack) =>
     if (wager > stack.recentWager)
       wager
