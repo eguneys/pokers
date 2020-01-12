@@ -38,7 +38,7 @@ object Visual {
   }
 
   def writeStack(stack: Stack): String = {
-    stack.role.forsyth + " " + stack.stack + " " + stack.recentWager + " " + stack.lastAction.map(_.uci).getOrElse(".")
+    s"${stack.role.forsyth} ${stack.stack} ${stack.recentWager} ${stack.lastAction.map(_.uci).getOrElse(".")}"
   }
 
   def readPot(source: String): Pot = {
@@ -55,7 +55,7 @@ object Visual {
   }
 
   def <<(source: String): Dealer = {
-    val lines = source.trim.lines.toList
+    val lines = source.trim.linesIterator.to(List)
 
     val headerPots = lines.head.split('!')
     val headerS = headerPots.head
@@ -87,7 +87,7 @@ object Visual {
     val stacks = dealer.stacks.map (writeStack) mkString "\n"
     val pots = (dealer.runningPot +: dealer.sidePots).map(writePot) mkString "~"
 
-    dealer.blinds + " " + dealer.round.forsyth + " " + dealer.button + " " + dealer.turnToAct + " " + dealer.lastFullRaise + "!" + pots + "\n" + stacks
+    s"${dealer.blinds} ${dealer.round.forsyth} ${dealer.button} ${dealer.turnToAct} ${dealer.lastFullRaise}!${pots}\n${stacks}"
   }
 
   def addNewLines(str: String) = "\n" + str + "\n"
