@@ -15,7 +15,7 @@ trait PokerTest extends Specification with ValidationMatchers {
     Situation(dealer, HandDealer.shuffled(dealer.stacks.length))
   }
 
-  def makeDealer(blinds: Int, stacks: List[Int]): Dealer =
+  def makeDealer(blinds: Int, stacks: List[Float]): Dealer =
     Dealer.empty(blinds, 0, stacks)
 
   implicit def richGame(game: Game) = new {

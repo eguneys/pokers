@@ -6,6 +6,34 @@ class PlayTest extends PokerTest {
 
   "playing a game" should {
 
+    "bare bones" in {
+      val dealer = Dealer.empty(10f, 0, List(100f, 100f))
+
+      val game = Game(dealer)
+
+      "should allow next round" in {
+        game.playMoves(Call, Check) must beGame("""
+10 F 0 1 10!20 0 1
+I 90 0 .
+I 90 0 .
+""")
+      }
+
+      "should not allow call on first act on flop" in {
+        game.playMoves(Call, Call, Call) must beFailure
+      }
+
+      "should allow check check on flop" in {
+        game.playMoves(Call, Check, Check, Check) must beGame("""
+10 T 0 1 10!20 0 1
+I 90 0 .
+I 90 0 .
+""")
+      }
+
+    }
+
+
     "heads up" in {
 
       val dealer = """

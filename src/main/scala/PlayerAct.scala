@@ -10,23 +10,23 @@ abstract class Raise extends PlayerAct {
 
   override val uci = "RR"
 
-  val to: Int
+  val to: Float
 
 } // ~ RR TR HR PR
 
-case class RegularRaise(to: Int) extends Raise {
+case class RegularRaise(to: Float) extends Raise {
   override val uci = "RR" + to
 }
 
-case class ThirdPotRaise(to: Int) extends Raise {
+case class ThirdPotRaise(to: Float) extends Raise {
   override val uci = "TR" + to
 }
 
-case class HalfPotRaise(to: Int) extends Raise {
+case class HalfPotRaise(to: Float) extends Raise {
   override val uci = "HR" + to
 }
 
-case class PotRaise(to: Int) extends Raise {
+case class PotRaise(to: Float) extends Raise {
   override  val uci = "PR" + to
 }
   
@@ -73,7 +73,7 @@ case object PlayerAct {
   object Raise {
 
     def forsyth(s: String): Option[Raise] = s.take(2) match {
-      case "RR" => Some(RegularRaise(s.drop(2).toInt))
+      case "RR" => Some(RegularRaise(s.drop(2).toFloat))
       case _ => None
     }
 

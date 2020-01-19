@@ -1,6 +1,6 @@
 package poker
 
-case class Stack(role: StackRole, stack: Int, recentWager: Int, lastAction: Option[PlayerAct]) {
+case class Stack(role: StackRole, stack: Float, recentWager: Float, lastAction: Option[PlayerAct]) {
 
   def diff: PlayerDiff = PlayerDiff(stack, recentWager, role)
 
@@ -8,7 +8,7 @@ case class Stack(role: StackRole, stack: Int, recentWager: Int, lastAction: Opti
 
   def acted: Boolean = lastAction.isDefined
 
-  def allin(newStack: Int, newWager: Int, allInAct: PlayerAct): Option[Stack] = {
+  def allin(newStack: Float, newWager: Float, allInAct: PlayerAct): Option[Stack] = {
     Some(copy(NewAllIn, newStack, newWager, Some(allInAct)))
   }
 
@@ -16,7 +16,7 @@ case class Stack(role: StackRole, stack: Int, recentWager: Int, lastAction: Opti
     Some(copy(Folded, stack, recentWager, Some(Fold)))
   }
 
-  def raise(to: Int, toCall: Int): Option[Stack] = {
+  def raise(to: Float, toCall: Float): Option[Stack] = {
     val total = to + toCall
     val newStack = stack - total
     val newWager = recentWager + total
@@ -29,12 +29,12 @@ case class Stack(role: StackRole, stack: Int, recentWager: Int, lastAction: Opti
       lastAction = Some(RegularRaise(to))))
   }
 
-  def call(toCall: Int): Option[Stack] = {
+  def call(toCall: Float): Option[Stack] = {
     val total = toCall
     val newStack = stack - total
     val newWager = recentWager + total
 
-    if (newStack <= 0)
+    if (newStack <= 0 || total == 0)
       None
     else
       Some(copy(stack = newStack,

@@ -3,6 +3,8 @@ package poker
 case class Situation(dealer: Dealer,
   handDealer: HandDealer) {
 
+  def toAct: StackIndex = dealer.turnToAct
+
   lazy val actor = Actor(this)
 
   lazy val moves: List[Move] = actor.validMoves

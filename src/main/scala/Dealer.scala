@@ -1,10 +1,10 @@
 package poker
 
-case class Dealer(blinds: Int,
+case class Dealer(blinds: Float,
   round: BettingRound,
   button: StackIndex,
   turnToAct: StackIndex,
-  lastFullRaise: Int,
+  lastFullRaise: Float,
   stacks: Vector[Stack],
   runningPot: Pot,
   sidePots: List[Pot]) {
@@ -57,14 +57,14 @@ case class Dealer(blinds: Int,
     ) filter (r => raise(r.to).isDefined)
   }
 
-  private def highestWager: Int = nonFoldStacks.foldLeft(0) { (wager, stack) =>
+  private def highestWager: Float = nonFoldStacks.foldLeft(0f) { (wager, stack) =>
     if (wager > stack.recentWager)
       wager
     else
       stack.recentWager
   }
 
-  private def toCall: Int = highestWager - toAct.recentWager
+  private def toCall: Float = highestWager - toAct.recentWager
 
   private def toAct: Stack = stacks(turnToAct)
 
@@ -74,7 +74,9 @@ case class Dealer(blinds: Int,
 
   private def collectPots: Dealer = {
 
-    def sliceAndBuildPot(foldeds: List[Int], wagers: List[(Int, StackIndex)], sidePots: List[Pot], runningPotWager: Int = 0): List[Pot] = wagers match {
+    import scala.math.Ordering.Float.TotalOrdering
+
+    def sliceAndBuildPot(foldeds: List[Float], wagers: List[(Float, StackIndex)], sidePots: List[Pot], runningPotWager: Float = 0): List[Pot] = wagers match {
       case (0, i) :: tail => sidePots
       case (wager, i) :: tail => {
 
@@ -115,11 +117,13 @@ case class Dealer(blinds: Int,
 
     val pots = sliceAndBuildPot(foldeds, newAllins ++ involveds, Nil, runningPot.wager)
 
-    val newRunningPot = pots.head
-    val newSidePots = pots.tail
-
-    copy(runningPot = newRunningPot,
-      sidePots = newSidePots)
+    pots match {
+      case newRunningPot :: newSidePots =>
+        copy(runningPot = newRunningPot,
+          sidePots = newSidePots)
+      case Nil =>
+        this
+    }
   }
 
   def distributeOne(): PotDistribution = {
@@ -176,7 +180,7 @@ case class Dealer(blinds: Int,
       updateToAct(_.check())
   }
 
-  def raise(to: Int): Option[Dealer] = {
+  def raise(to: Float): Option[Dealer] = {
     if (to < lastFullRaise || (toAct.acted && toCall < lastFullRaise))
       None
     else {
@@ -226,7 +230,7 @@ case class Dealer(blinds: Int,
 
 case object Dealer {
 
-  def empty(blinds: Int, button: StackIndex, iStacks: List[Int]) = {
+  def empty(blinds: Float, button: StackIndex, iStacks: List[Float]) = {
 
     val sl = iStacks.length;
 

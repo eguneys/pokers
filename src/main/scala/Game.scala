@@ -26,11 +26,16 @@ case class Game(
     if (!newC.isRunning) newC.start else newC
   }
 
+  def player = situation.toAct
+
   def dealer = situation.dealer
 
 }
 
 object Game {
+
+  def apply(blinds: Float, button: StackIndex, iStacks: List[Float]): Game =
+    Game(Dealer.empty(blinds, button, iStacks))
 
   def apply(dealer: Dealer): Game = Game(dealer, HandDealer.shuffled(dealer.stacks.length))
 

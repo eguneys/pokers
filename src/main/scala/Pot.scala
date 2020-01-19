@@ -1,7 +1,7 @@
 package poker
 
 case class Pot(
-  wager: Int,
+  wager: Float,
   involved: List[StackIndex]) {
 
   def distribute(handValues: List[HandValueMagic], foldeds: List[StackIndex]): PotDistribution = {
