@@ -35,6 +35,11 @@ case class Situation(dealer: Dealer,
   
   def end: Boolean = showdown || oneWin
 
+  lazy val status: Option[Status] =
+    if (oneWin) Some(Status.OneWin)
+    else if (showdown) Some(Status.Showdown)
+    else None
+
   def move(act: PlayerAct): Valid[Move] = {
     def findMove(act: PlayerAct) = act match {
       case r:Raise => raiseMove(r)
