@@ -1,4 +1,55 @@
-### Description
+### Poker Masa Description
+
+Cash Masa has 9 or 5 seats and a possible game status. Seats have a stack and status.
+    One can buy-in with a seat for an empty side
+    When there is one seat it's in WaitOthers status, when there is two seats both status is WaitNextHand, other buy-ins seat status is WaitNextHand.
+    When there is no game, seats can be sitoutNext to remove from their side
+    When there is a game, seats can sitoutNext to set their status to SitoutNextHand to be later removed from their side when the game is finished.
+When there are at least two seats a game can be dealt, and be played.
+    When a game is dealt, seats can apply moves to a game.
+    When a game is finished, players stacks are updated from the finished game, players with a SitoutNextHand status are removed from their sides. and other players status is set to WaitNextHand, game status is removed
+
+Masa(
+    seats Side.Map[Seat]
+      stack Float
+      Seat.Status
+          WaitOthers WaitNextHand SitoutNextHand Involved
+    status: Option[Status]
+  ) {
+
+    def players: List[Seat]
+
+    def player(side: Side): Option[Player]
+
+    def isEmpty(side: Side)
+    def isFull(side: Side)
+
+    def nbPlayers = players.length
+
+    
+    def atLeastTwo = nbPlayers >= 2
+    def headsUp = nbPlayers == 2
+    def onlyOne = nbPlayers == 1
+    def noOne = nbPlayers == 0
+
+    def isGame = status.isDefined
+    def noGame = !isGame
+    def dealt = status.exists(_ < OneWin)
+    def finished = status.exists(_ >= OneWin)
+
+    def dealable = noGame && atLeastTwo
+
+    def sitoutNext(value: Boolean)
+    
+
+}
+
+Side
+    index
+
+Side.Map[A]: Map[Side, A]
+
+### Poker Game Description
 
 Players have roles Involved, Fold, New-Allin, Old-Allin that take turns to act. Fold and All-in players can't act further. There is a button that decides BB SB and first to act. Next to button is SB and next is BB. First to act on Pre-flop is next to BB, on other rounds it's next to button.
 There are Betting rounds Pre-flop flop turn river. 
