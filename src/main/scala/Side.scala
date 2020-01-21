@@ -9,7 +9,7 @@ trait NineSide extends Side
 
 object Side {
 
-  type Map[A] = scala.collection.Map[Side, A]
+  type Map[A] = scala.collection.immutable.Map[Side, A]
 
   case object ZeroI extends FiveSide with NineSide {
     val index = 0

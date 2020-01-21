@@ -18,5 +18,6 @@ object Status {
   case object Started extends Status(20)
   case object OneWin extends Status(30)
   case object Showdown extends Status(40)
+  case object Aborted extends Status(60)
 
 }
