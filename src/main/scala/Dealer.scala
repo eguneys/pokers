@@ -35,6 +35,7 @@ case class Dealer(blinds: Chips,
 
   def nonFoldStacks: Vector[Stack] = stacks.filterNot(_ is Folded)
   def involvedStacks: Vector[Stack] = stacks.filter(_ is Involved)
+  def newAllInStacks: Vector[Stack] = stacks.filter(_ is NewAllIn)
 
   def allActed: Boolean = stacks forall(_.lastAction.isDefined)
   def wagersEqualized: Boolean = {
@@ -44,6 +45,12 @@ case class Dealer(blinds: Chips,
       case _ => false
     }
   }
+
+  def involvedsHigherThanNewAllIns: Boolean = {
+    newAllInStacks.forall(newAllin =>
+      involvedStacks.forall(_.recentWager > newAllin.recentWager))
+  }
+
 
   def validRaises: List[Raise] = {
     val recentWagers = stacks.map(_.recentWager).foldLeft(Chips.empty)(_+_)
@@ -193,10 +200,10 @@ case class Dealer(blinds: Chips,
   }
 
   def check() :Option[Dealer] = {
-    if (toCall != Chips.empty)
-      None
-    else
+    if (toCall == Chips.empty)
       updateToAct(_.check())
+    else
+      None
   }
 
   def raise(to: Chips): Option[Dealer] = {

@@ -65,5 +65,17 @@ I 100 10 .
 """).oneWin must beTrue
     }
 
+
+    "detect next turn after all in" in {
+      val dealer = Dealer.empty(10f, 0, List(100f, 100f))
+
+      val game = Game(dealer)
+
+      game.playMoves(Call, AllInNone) must beSuccess.like {
+        case g =>
+          g.situation.showdown must beFalse
+          g.situation.nextTurn must beTrue
+      }
+    }
   }
 }

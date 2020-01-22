@@ -24,7 +24,7 @@ case class Situation(dealer: Dealer,
   def nextTurn: Boolean = !nextRound && !end
   def nextRound: Boolean = roundEnd && round != River && !end
 
-  def roundEnd: Boolean = dealer.allActed && dealer.wagersEqualized
+  def roundEnd: Boolean = dealer.allActed && dealer.wagersEqualized && dealer.involvedsHigherThanNewAllIns
 
   def showdown: Boolean = if (roundEnd) {
     (round == River && !oneWin) ||

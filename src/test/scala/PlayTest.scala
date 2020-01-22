@@ -49,6 +49,27 @@ I 90 0 .
 
     }
 
+    "all in" in {
+      val dealer = Dealer.empty(10f, 0, List(100f, 100f))
+
+      val game = Game(dealer)
+
+      val fourWay = Game(Dealer.empty(10f, 0, List(100f, 100f, 100f, 100f)))
+
+      "should allow next turn after all in" in {
+        game.playMoves(Call, AllInNone) must beGame("""
+10 P 0 1 90!0 0 1
+N 0 100 AF
+I 90 10 CA
+""")
+      }
+
+      "should not allow check after all in" in {
+        fourWay.playMoves(Call, Call, Call, Check, AllInNone, Check) must beFailure
+      }
+
+    }
+
 
     "heads up" in {
 
