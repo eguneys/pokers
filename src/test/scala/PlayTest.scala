@@ -68,6 +68,16 @@ I 90 10 CA
         fourWay.playMoves(Call, Call, Call, Check, AllInNone, Check) must beFailure
       }
 
+      "should not allow check after all in fold" in {
+        fourWay.playMoves(Call, Call, Call, Check, Check, Check, Check, AllInNone, Fold, Check) must beFailure
+      }
+
+      "should not allow call for all in amount" in {
+        fourWay.playMoves(Call, Call, Call, Check, 
+          Check, Check, Check, AllInNone,
+          Fold, Call) must beFailure
+      }
+
     }
 
 

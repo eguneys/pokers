@@ -7,13 +7,13 @@ case class Chips(value: Float) extends Ordered[Chips] {
   def /(v: Int) = Chips(value / v)
   def *(v: Int) = Chips(value * v)
 
-  def compare(o: Chips) = value.compare(o.value)
+  def rounded = (value * 1000).toInt / 1000f
 
-  override def toString = {
-    val rounded = (value * 1000).toInt / 1000
-    if (value == rounded) f"$value%1.0f"
-    else f"$value%1.4f"
+  def compare(o: Chips) = {
+    rounded.compare(o.rounded)
   }
+
+  override def toString = rounded.toString
 
 }
 
