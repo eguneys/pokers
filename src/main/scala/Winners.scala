@@ -2,4 +2,4 @@ package poker
 
 case class Winners(
   pots: List[PotDistribution],
-  stacks: List[Float])
+  stacks: List[Chips])

@@ -1,5 +1,5 @@
 package poker
 
 case class PotDistribution(
-  wager: Float,
+  wager: Chips,
   involved: List[StackIndex])

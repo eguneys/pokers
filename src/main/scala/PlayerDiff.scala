@@ -1,6 +1,6 @@
 package poker
 
 case class PlayerDiff(
-  newStack: Float,
-  newWager: Float,
+  newStack: Chips,
+  newWager: Chips,
   newRole: StackRole)

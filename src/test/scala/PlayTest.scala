@@ -89,7 +89,9 @@ I 95 5 .
 
         val game = Game(dealer)
 
-        V.success(game) must bePoss(Call, Fold, AllInNone, PotRaise(20), HalfPotRaise(10))
+        V.success(game) must bePoss(Call, Fold, AllInNone, 
+          RegularRaise(10),
+          PotRaise(20), HalfPotRaise(10))
       }
 
       "third pot raise" in {
@@ -99,7 +101,7 @@ I 90 10 .
 I 95 30 RR20
 """)
 
-        V.success(game) must bePoss(Call, Fold, AllInNone, PotRaise(60), HalfPotRaise(30), ThirdPotRaise(20))
+        V.success(game) must bePoss(Call, Fold, AllInNone, RegularRaise(10), PotRaise(60), HalfPotRaise(30), ThirdPotRaise(20))
 
       }
 

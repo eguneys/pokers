@@ -1,6 +1,6 @@
 package poker
 
-case class Stack(role: StackRole, stack: Float, recentWager: Float, lastAction: Option[PlayerAct]) {
+case class Stack(role: StackRole, stack: Chips, recentWager: Chips, lastAction: Option[PlayerAct]) {
 
   def diff: PlayerDiff = PlayerDiff(stack, recentWager, role)
 
@@ -8,7 +8,7 @@ case class Stack(role: StackRole, stack: Float, recentWager: Float, lastAction: 
 
   def acted: Boolean = lastAction.isDefined
 
-  def allin(newStack: Float, newWager: Float, allInAct: PlayerAct): Option[Stack] = {
+  def allin(newStack: Chips, newWager: Chips, allInAct: PlayerAct): Option[Stack] = {
     Some(copy(NewAllIn, newStack, newWager, Some(allInAct)))
   }
 
@@ -16,12 +16,12 @@ case class Stack(role: StackRole, stack: Float, recentWager: Float, lastAction: 
     Some(copy(Folded, stack, recentWager, Some(Fold)))
   }
 
-  def raise(to: Float, toCall: Float): Option[Stack] = {
+  def raise(to: Chips, toCall: Chips): Option[Stack] = {
     val total = to + toCall
     val newStack = stack - total
     val newWager = recentWager + total
 
-    if (newStack <= 0)
+    if (newStack <= Chips.empty)
       None
     else
     Some(copy(stack = newStack,
@@ -29,12 +29,12 @@ case class Stack(role: StackRole, stack: Float, recentWager: Float, lastAction: 
       lastAction = Some(RegularRaise(to))))
   }
 
-  def call(toCall: Float): Option[Stack] = {
+  def call(toCall: Chips): Option[Stack] = {
     val total = toCall
     val newStack = stack - total
     val newWager = recentWager + total
 
-    if (newStack <= 0 || total == 0)
+    if (newStack <= Chips.empty || total == Chips.empty)
       None
     else
       Some(copy(stack = newStack,
@@ -52,8 +52,8 @@ case class Stack(role: StackRole, stack: Float, recentWager: Float, lastAction: 
     else
       this
 
-    s1.copy(recentWager = 0, lastAction = None)
+    s1.copy(recentWager = Chips.empty, lastAction = None)
   }
 
-  def winPot(amount: Float): Stack = copy(stack = stack + amount)
+  def winPot(amount: Chips): Stack = copy(stack = stack + amount)
 }

@@ -18,24 +18,24 @@ class VisualTest extends PokerTest {
   }
 
   val newDealerFormat = """
-10.0 P 0 0 10.0!0.0 0 1 2
-I 100.0 0.0 .
-I 95.0 5.0 .
-I 90.0 10.0 .
+10 P 0 0 10!0 0 1 2
+I 100 0 .
+I 95 5 .
+I 90 10 .
 """
 
 val examples = Seq(
   newDealerFormat,
 """
-10.0 P 0 0 10.0!0.0 0 1 2
-I 100.0 10.0 CA
-I 100.0 10.0 CA
-I 100.0 10.0 CH
+10 P 0 0 10!0 0 1 2
+I 100 10 CA
+I 100 10 CA
+I 100 10 CH
 """,
 """
-10.0 P 0 1 10.0!0.0 0 1
-I 80.0 20.0 RR100.0
-I 90.0 10.0 CA
+10 P 0 1 10!0 0 1
+I 80 20 RR100
+I 90 10 CA
 """
 )
 

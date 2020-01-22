@@ -1,10 +1,10 @@
 package poker
 
-case class Dealer(blinds: Float,
+case class Dealer(blinds: Chips,
   round: BettingRound,
   button: StackIndex,
   turnToAct: StackIndex,
-  lastFullRaise: Float,
+  lastFullRaise: Chips,
   stacks: Vector[Stack],
   runningPot: Pot,
   sidePots: List[Pot]) {
@@ -46,25 +46,28 @@ case class Dealer(blinds: Float,
   }
 
   def validRaises: List[Raise] = {
-    val recentWagers = stacks.map(_.recentWager).sum
+    val recentWagers = stacks.map(_.recentWager).foldLeft(Chips.empty)(_+_)
     val pot = runningPot.wager + recentWagers + toCall
     val halfPot = pot / 2
     val thirdPot = pot / 3
+    val minRaise = lastFullRaise
 
-    List(PotRaise(pot),
+    List(
+      RegularRaise(minRaise),
+      PotRaise(pot),
       HalfPotRaise(halfPot),
       ThirdPotRaise(thirdPot)
     ) filter (r => raise(r.to).isDefined)
   }
 
-  private def highestWager: Float = nonFoldStacks.foldLeft(0f) { (wager, stack) =>
+  private def highestWager: Chips = nonFoldStacks.foldLeft(Chips.empty) { (wager, stack) =>
     if (wager > stack.recentWager)
       wager
     else
       stack.recentWager
   }
 
-  private def toCall: Float = highestWager - toAct.recentWager
+  private def toCall: Chips = highestWager - toAct.recentWager
 
   private def toAct: Stack = stacks(turnToAct)
 
@@ -74,10 +77,8 @@ case class Dealer(blinds: Float,
 
   private def collectPots: Dealer = {
 
-    import scala.math.Ordering.Float.TotalOrdering
-
-    def sliceAndBuildPot(foldeds: List[Float], wagers: List[(Float, StackIndex)], sidePots: List[Pot], runningPotWager: Float = 0): List[Pot] = wagers match {
-      case (0, i) :: tail => sidePots
+    def sliceAndBuildPot(foldeds: List[Chips], wagers: List[(Chips, StackIndex)], sidePots: List[Pot], runningPotWager: Chips = Chips.empty): List[Pot] = wagers match {
+      case (Chips.empty, i) :: tail => sidePots
       case (wager, i) :: tail => {
 
         val lessFoldeds = foldeds.filter(_ <= wager)
@@ -85,7 +86,7 @@ case class Dealer(blinds: Float,
 
         val newFoldeds = moreFoldeds.map(_ - wager)
 
-        val foldedWager = lessFoldeds.sum + wager * moreFoldeds.length
+        val foldedWager = lessFoldeds.foldLeft(Chips.empty)(_+_) + wager * moreFoldeds.length
 
         val newPot = Pot(
           foldedWager +
@@ -110,7 +111,7 @@ case class Dealer(blinds: Float,
       .toList
 
     val foldeds = stacks
-      .filter(s => s.is(Folded) && s.recentWager > 0)
+      .filter(s => s.is(Folded) && s.recentWager > Chips.empty)
       .map(_.recentWager)
       .sorted
       .toList
@@ -192,13 +193,13 @@ case class Dealer(blinds: Float,
   }
 
   def check() :Option[Dealer] = {
-    if (toCall != 0)
+    if (toCall != Chips.empty)
       None
     else
       updateToAct(_.check())
   }
 
-  def raise(to: Float): Option[Dealer] = {
+  def raise(to: Chips): Option[Dealer] = {
     if (to < lastFullRaise || (toAct.acted && toCall < lastFullRaise))
       None
     else {
@@ -216,7 +217,7 @@ case class Dealer(blinds: Float,
   def allin(): Option[Dealer] = {
 
     val total = toAct.stack
-    val newStack = 0
+    val newStack = Chips.empty
     val newWager = toAct.recentWager + total
 
     val raiseTo = total - toCall
@@ -248,7 +249,7 @@ case class Dealer(blinds: Float,
 
 case object Dealer {
 
-  def empty(blinds: Float, button: StackIndex, iStacks: List[Float]) = {
+  def empty(blinds: Chips, button: StackIndex, iStacks: List[Chips]) = {
 
     val sl = iStacks.length;
 
@@ -260,10 +261,10 @@ case object Dealer {
     val stacks = iStacks.zipWithIndex.map({
       case (stack, i) if i == sb  => Stack(Involved, stack - blinds / 2, blinds / 2, None)
       case (stack, i) if i == bb => Stack(Involved, stack - blinds, blinds, None)
-      case (stack, _) => Stack(Involved, stack, 0, None)
+      case (stack, _) => Stack(Involved, stack, Chips.empty, None)
     })
 
-    val runningPot = Pot(0, stacks.zipWithIndex.map(_._2))
+    val runningPot = Pot(Chips.empty, stacks.zipWithIndex.map(_._2))
 
     Dealer(blinds,
       Preflop,

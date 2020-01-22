@@ -3,7 +3,7 @@ package poker
 import poker.format.Visual
 
 case class Pot(
-  wager: Float,
+  wager: Chips,
   involved: List[StackIndex]) {
 
   def visual = Visual writePot this

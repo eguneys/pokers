@@ -19,7 +19,7 @@ class DealerTest extends PokerTest {
       dealer.BB must_== 2
       dealer.turnToAct must_== 0
 
-      dealer.lastFullRaise must_== 100
+      dealer.lastFullRaise must_== Chips(100)
     }
 
     "have player acts" in {
@@ -35,10 +35,10 @@ class DealerTest extends PokerTest {
 
       "allow raise at least last full raise" in {
         dealer.raise(100) must beDealer("""
-100.0 P 0 0 100.0!0.0 0 1 2
-I 800.0 200.0 RR100.0
-I 950.0 50.0 .
-I 700.0 100.0 .
+100 P 0 0 100!0 0 1 2
+I 800 200 RR100
+I 950 50 .
+I 700 100 .
 """)
       }
 
@@ -65,10 +65,10 @@ I 700 100 .
 
         dealer.call() must beSome.like {
           case d => addNewLines(d.visual) must_== """
-100.0 P 0 2 100.0!0.0 0 1 2
-I 800.0 700.0 RR700.0
-I 950.0 50.0 .
-I 100.0 700.0 CA
+100 P 0 2 100!0 0 1 2
+I 800 700 RR700
+I 950 50 .
+I 100 700 CA
 """
         }
       }
@@ -95,20 +95,20 @@ I 700 700 .
 
         dealer.check must beSome.like {
           case d => addNewLines(d.visual) must_== """
-100.0 P 0 2 100.0!0.0 0 1 2
-I 800.0 700.0 RR700.0
-I 950.0 50.0 .
-I 700.0 700.0 CH
+100 P 0 2 100!0 0 1 2
+I 800 700 RR700
+I 950 50 .
+I 700 700 CH
 """
         }
       }
 
       "allow fold" in {
         dealer.fold() must beDealer("""
-100.0 P 0 0 100.0!0.0 0 1 2
-F 1000.0 0.0 FO
-I 950.0 50.0 .
-I 700.0 100.0 .
+100 P 0 0 100!0 0 1 2
+F 1000 0 FO
+I 950 50 .
+I 700 100 .
 """)
       }
 
@@ -116,10 +116,10 @@ I 700.0 100.0 .
 
         "allow all in full" in {
           dealer.allin() must beDealer("""
-100.0 P 0 0 900.0!0.0 0 1 2
-N 0.0 1000.0 AF
-I 950.0 50.0 .
-I 700.0 100.0 .
+100 P 0 0 900!0 0 1 2
+N 0 1000 AF
+I 950 50 .
+I 700 100 .
 """)
         }
 
@@ -132,10 +132,10 @@ I 700 100 .
 """
 
           dealer.allin() must beDealer("""
-100.0 P 0 1 100.0!0.0 0 1 2
-I 150.0 200.0 RR100.0
-N 0.0 250.0 AH
-I 700.0 100.0 .
+100 P 0 1 100!0 0 1 2
+I 150 200 RR100
+N 0 250 AH
+I 700 100 .
 """)
         }
 
@@ -149,10 +149,10 @@ I 700 100 .
 """
 
           dealer.allin() must beDealer("""
-100.0 P 0 1 100.0!0.0 0 1 2
-I 150.0 200.0 RR100.0
-N 0.0 150.0 AC
-I 700.0 100.0 .
+100 P 0 1 100!0 0 1 2
+I 150 200 RR100
+N 0 150 AC
+I 700 100 .
 """)
         }
 
@@ -166,10 +166,10 @@ I 700.0 100.0 .
       "full raise" in {
 
         dealer.raise(250) must beDealer("""
-100.0 P 0 0 250.0!0.0 0 1 2
-I 650.0 350.0 RR250.0
-I 950.0 50.0 .
-I 700.0 100.0 .
+100 P 0 0 250!0 0 1 2
+I 650 350 RR250
+I 950 50 .
+I 700 100 .
 """)
       }
     }
@@ -186,12 +186,12 @@ I 200 200 CA
 """
 
       dealer.raise(100) must beDealer("""
-100.0 F 0 0 100.0!0.0 0 1 2 3 4
-I 50.0 300.0 RR100.0
-N 0.0 125.0 AA
-I 200.0 125.0 CA
-N 0.0 200.0 AA
-I 200.0 200.0 CA
+100 F 0 0 100!0 0 1 2 3 4
+I 50 300 RR100
+N 0 125 AA
+I 200 125 CA
+N 0 200 AA
+I 200 200 CA
 """)
 
     }
@@ -207,12 +207,12 @@ I 16000 4000 .
 """
 
       dealer.raise(4000) must beDealer("""
-4000.0 P 2 4 4000.0!0.0 0 1 2 3 4
-I 1000.0 4000.0 CA
-F 1000.0 0.0 FO
-N 0.0 7500.0 AH
-F 1000.0 2000.0 FO
-I 8500.0 11500.0 RR4000.0
+4000 P 2 4 4000!0 0 1 2 3 4
+I 1000 4000 CA
+F 1000 0 FO
+N 0 7500 AH
+F 1000 2000 FO
+I 8500 11500 RR4000
 """)
     }
 
@@ -243,12 +243,12 @@ I 200 200 CA
 """
 
       Some(dealer.nextTurn) must beDealer("""
-100.0 F 0 2 100.0!0.0 0 1 2 3 4
-I 50.0 200.0 CA
-N 0.0 125.0 AA
-I 200.0 125.0 CA
-N 0.0 200.0 AA
-I 200.0 200.0 CA
+100 F 0 2 100!0 0 1 2 3 4
+I 50 200 CA
+N 0 125 AA
+I 200 125 CA
+N 0 200 AA
+I 200 200 CA
 """)
     }
 
@@ -264,12 +264,12 @@ I 200 200 CA
 """
 
       Some(dealer.nextRound) must beDealer("""
-100.0 T 0 2 100.0!300.0 0 2 3 4~625.0 0 1 2 3 4
-I 50.0 0.0 .
-O 0.0 0.0 .
-I 200.0 0.0 .
-O 0.0 0.0 .
-I 200.0 0.0 .
+100 T 0 2 100!300 0 2 3 4~625 0 1 2 3 4
+I 50 0 .
+O 0 0 .
+I 200 0 .
+O 0 0 .
+I 200 0 .
 """)
     }
 
@@ -288,12 +288,12 @@ I 25 100 CA
 """
 
         Some(dealer.endRound) must beDealer("""
-10.0 F 0 4 10.0!50.0 0 4~75.0 0 1 4~100.0 0 1 2 4~125.0 0 1 2 3 4
-O 0.0 0.0 .
-O 0.0 0.0 .
-O 0.0 0.0 .
-O 0.0 0.0 .
-I 25.0 0.0 .
+10 F 0 4 10!50 0 4~75 0 1 4~100 0 1 2 4~125 0 1 2 3 4
+O 0 0 .
+O 0 0 .
+O 0 0 .
+O 0 0 .
+I 25 0 .
 """)
 
       }
@@ -311,13 +311,13 @@ I 25 120 CA
 """
 
         Some(dealer.nextRound) must beDealer("""
-10.0 T 0 4 10.0!40.0 4 5~75.0 0 4 5~100.0 0 1 4 5~125.0 0 1 2 4 5~150.0 0 1 2 3 4 5
-O 0.0 0.0 .
-O 0.0 0.0 .
-O 0.0 0.0 .
-O 0.0 0.0 .
-I 25.0 0.0 .
-I 25.0 0.0 .
+10 T 0 4 10!40 4 5~75 0 4 5~100 0 1 4 5~125 0 1 2 4 5~150 0 1 2 3 4 5
+O 0 0 .
+O 0 0 .
+O 0 0 .
+O 0 0 .
+I 25 0 .
+I 25 0 .
 """)
 
       }
@@ -335,13 +335,13 @@ I 25 120 CA
 """
 
         Some(dealer.nextRound) must beDealer("""
-10.0 T 0 4 10.0!40.0 4 5~75.0 0 4 5~100.0 0 1 4 5~125.0 0 1 2 4 5~250.0 0 1 2 3 4 5
-O 0.0 0.0 .
-O 0.0 0.0 .
-O 0.0 0.0 .
-O 0.0 0.0 .
-I 25.0 0.0 .
-I 25.0 0.0 .
+10 T 0 4 10!40 4 5~75 0 4 5~100 0 1 4 5~125 0 1 2 4 5~250 0 1 2 3 4 5
+O 0 0 .
+O 0 0 .
+O 0 0 .
+O 0 0 .
+I 25 0 .
+I 25 0 .
 """)
 
       }
@@ -361,14 +361,14 @@ F 25 80 FO
 """
 
         Some(dealer.nextRound) must beDealer("""
-10.0 T 0 4 10.0!40.0 4 5~80.0 0 4 5~125.0 0 1 4 5~150.0 0 1 2 4 5~275.0 0 1 2 3 4 5
-O 0.0 0.0 .
-O 0.0 0.0 .
-O 0.0 0.0 .
-O 0.0 0.0 .
-I 25.0 0.0 .
-I 25.0 0.0 .
-F 25.0 0.0 .
+10 T 0 4 10!40 4 5~80 0 4 5~125 0 1 4 5~150 0 1 2 4 5~275 0 1 2 3 4 5
+O 0 0 .
+O 0 0 .
+O 0 0 .
+O 0 0 .
+I 25 0 .
+I 25 0 .
+F 25 0 .
 """)
 
       }
@@ -388,15 +388,15 @@ F 25 110 FO
 """
 
         Some(dealer.nextRound) must beDealer("""
-10.0 T 0 4 10.0!50.0 4 5~105.0 0 4 5~150.0 0 1 4 5~175.0 0 1 2 4 5~300.0 0 1 2 3 4 5
-O 0.0 0.0 .
-O 0.0 0.0 .
-O 0.0 0.0 .
-O 0.0 0.0 .
-I 25.0 0.0 .
-I 25.0 0.0 .
-F 25.0 0.0 .
-F 25.0 0.0 .
+10 T 0 4 10!50 4 5~105 0 4 5~150 0 1 4 5~175 0 1 2 4 5~300 0 1 2 3 4 5
+O 0 0 .
+O 0 0 .
+O 0 0 .
+O 0 0 .
+I 25 0 .
+I 25 0 .
+F 25 0 .
+F 25 0 .
 """)
 
       }
@@ -420,7 +420,7 @@ F 25 0 .
 
         Some(dealer.oneWinner) must beSome.like {
           case Winners(_, stacks) =>
-            stacks(4) must_== 325
+            stacks(4) must_== Chips(325)
         }
       }
 
@@ -497,6 +497,7 @@ I 25 20 CA
 """
 
         dealer.validRaises must_== List(
+          RegularRaise(10),
           PotRaise(180),
           HalfPotRaise(90),
           ThirdPotRaise(60)
@@ -507,13 +508,14 @@ I 25 20 CA
       "not enough for pot raise" in {
 
         val dealer = Visual << """
-10 F 0 1 10!100 0 1 2
+10 F 0 1 12!100 0 1 2
 N 0 30 AF
 I 210 0 .
 I 25 20 CA
 """
 
         dealer.validRaises must_== List(
+          RegularRaise(12),
           HalfPotRaise(90),
           ThirdPotRaise(60)
         )
@@ -531,11 +533,24 @@ I 25 10 CA
 """
 
         dealer.validRaises must_== List(
+          RegularRaise(10),
           PotRaise(25),
           HalfPotRaise(12.5f)
         )
       }
 
+      "not enough raise for min raise" in {
+
+        val dealer = Visual << """
+10 P 0 1 5!0 0 1 2
+N 0 5 AF
+I 3 0 .
+I 25 10 CA
+"""
+
+        dealer.validRaises must_== List(
+        )
+      }
     }
 
   }

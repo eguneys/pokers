@@ -7,8 +7,9 @@ case class HandDealer(flop: List[Card],
 
   def middle = flop :+ turn :+ river
 
-  def hand(i: StackIndex) = Hand(List(hands(i)._1, hands(i)._2) ++ middle)
+  def holes(i: StackIndex) = List(hands(i)._1, hands(i)._2)
 
+  def hand(i: StackIndex) = Hand(holes(i) ++ middle)
 
   def middle(round: BettingRound): MiddleCards = round match {
     case Flop => MiddleCards(flop = Some(flop))
