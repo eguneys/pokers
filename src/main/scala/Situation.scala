@@ -17,6 +17,8 @@ case class Situation(dealer: Dealer,
 
   lazy val middle: MiddleCards = handDealer.middle(round)
 
+  lazy val handValueMagics: List[HandValueMagic] = handDealer.handValues(dealer)
+
   lazy val showdownHands: List[Option[Hand]] = handDealer.showdownHands(dealer)
 
   def nextTurn: Boolean = !nextRound && !end

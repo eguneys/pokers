@@ -18,7 +18,8 @@ case class Move(
     } else if (iSituation.showdown) {
       val middle = iSituation.middle
       val hands = iSituation.showdownHands
-      val winners = situationAfter.dealer.showdownWinner(Nil)
+      val handValueMagics = iSituation.handValueMagics
+      val winners = situationAfter.dealer.showdownWinner(handValueMagics)
       Showdown(middle, hands, winners)
     } else if (iSituation.nextRound) {
       val middle = situationAfter.middle

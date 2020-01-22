@@ -1,11 +1,14 @@
 package poker
 
+import poker.format.Visual
+
 case class Pot(
   wager: Float,
   involved: List[StackIndex]) {
 
-  def distribute(handValues: List[HandValueMagic], foldeds: List[StackIndex]): PotDistribution = {
+  def visual = Visual writePot this
 
+  def distribute(handValues: List[HandValueMagic], foldeds: List[StackIndex]): PotDistribution = {
     val realInvolved = involved.filterNot(foldeds.contains)
 
     val values = handValues

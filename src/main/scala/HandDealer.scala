@@ -17,6 +17,9 @@ case class HandDealer(flop: List[Card],
     case _ => MiddleCards()
   }
 
+  def handValues(dealer: Dealer): List[HandValueMagic] = dealer.stacks.zipWithIndex.map { case (_, i) => hand(i).value.magic
+  }.toList
+
   def showdownHands(dealer: Dealer): List[Option[Hand]] = dealer.stacks.zipWithIndex.map { case (stack, _) if stack is Folded => None
     case (_, i) => Some(hand(i))
   }.toList

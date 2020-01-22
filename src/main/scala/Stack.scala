@@ -54,4 +54,6 @@ case class Stack(role: StackRole, stack: Float, recentWager: Float, lastAction: 
 
     s1.copy(recentWager = 0, lastAction = None)
   }
+
+  def winPot(amount: Float): Stack = copy(stack = stack + amount)
 }

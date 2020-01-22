@@ -147,11 +147,29 @@ case class Dealer(blinds: Float,
   }
 
   def showdownWinner(handValues: List[HandValueMagic]): Winners = {
-    Winners(distributeAll(handValues), stacks.map(_.stack).toList)
+    val dists = distributeAll(handValues)
+    val newStacks = dists.foldLeft(stacks) {
+      case (stacks, dist) =>
+        distributeToStacks(stacks, dist)
+    }
+    Winners(dists, newStacks.map(_.stack).toList)
   }
 
   def oneWinner: Winners = {
-    Winners(List(distributeOne()), stacks.map(_.stack).toList)
+    val dists = List(distributeOne())
+    val newStacks = dists.foldLeft(stacks) {
+      case (stacks, dist) =>
+        distributeToStacks(stacks, dist)
+    }
+    Winners(dists, newStacks.map(_.stack).toList)
+  }
+
+  private def distributeToStacks(stacks: Vector[Stack], dist: PotDistribution): Vector[Stack] = {
+    val amount = dist.wager / dist.involved.length
+    dist.involved.foldLeft(stacks) {
+      case (stacks, i) =>
+        stacks.updated(i, stacks(i).winPot(amount))
+    }
   }
 
   def endRound: Dealer = {

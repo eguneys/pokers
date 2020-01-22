@@ -31,6 +31,22 @@ I 90 0 .
 """)
       }
 
+      "should distribute after showdown" in {
+        val game2 = game.playMoves(Call, Check,
+          Check, Check,
+          Check, Check,
+          Check) getOrElse null
+
+        game2(Check) must beSuccess.like {
+          case (g, m) => {
+            Some(m.dealerAct) must beSome.like {
+              case Showdown(_, _, winners) =>
+                3 must_== 3
+            }
+          }
+        }
+      }
+
     }
 
 

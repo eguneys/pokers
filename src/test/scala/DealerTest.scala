@@ -417,6 +417,11 @@ F 25 0 .
 """
 
         dealer.distributeOne must_== PotDistribution(300, List(4))
+
+        Some(dealer.oneWinner) must beSome.like {
+          case Winners(_, stacks) =>
+            stacks(4) must_== 325
+        }
       }
 
       "distribute all" in {
