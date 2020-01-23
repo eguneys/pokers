@@ -7,7 +7,11 @@ case class Chips(value: Float) extends Ordered[Chips] {
   def /(v: Int) = Chips(value / v)
   def *(v: Int) = Chips(value * v)
 
+  def /~(v: Int) = Chips(roundUp(value / v))
+
   def rounded = (value * 1000).toInt / 1000f
+
+  private def roundUp(n: Float): Float = (n / 0.005).toInt * 0.005f;
 
   def compare(o: Chips) = {
     rounded.compare(o.rounded)

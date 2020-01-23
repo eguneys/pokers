@@ -55,8 +55,8 @@ case class Dealer(blinds: Chips,
   def validRaises: List[Raise] = {
     val recentWagers = stacks.map(_.recentWager).foldLeft(Chips.empty)(_+_)
     val pot = runningPot.wager + recentWagers + toCall
-    val halfPot = pot / 2
-    val thirdPot = pot / 3
+    val halfPot = pot /~ 2
+    val thirdPot = pot /~ 3
     val minRaise = lastFullRaise
 
     List(
