@@ -13,7 +13,10 @@ case class Chips(value: Float) extends Ordered[Chips] {
     rounded.compare(o.rounded)
   }
 
-  override def toString = rounded.toString
+  override def toString = if (rounded==rounded.toInt) 
+    rounded.toInt.toString
+  else
+    rounded.toString
 
 }
 

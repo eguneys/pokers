@@ -73,7 +73,7 @@ case object PlayerAct {
   object Raise {
 
     def forsyth(s: String): Option[Raise] = s.take(2) match {
-      case "RR" => Some(RegularRaise(Chips(s.drop(2).toFloat)))
+      case "TR" | "HR" | "PR" | "RR" => Some(RegularRaise(Chips(s.drop(2).toFloat)))
       case _ => None
     }
 

@@ -11,6 +11,12 @@ class UciMoveTest extends PokerTest {
 
       val move2 = Uci.Move("RR100").get
       move2.playerAct must_== RegularRaise(100)
+
+      Uci.Move("TR2.333") must beSome.like {
+        case m =>
+          m.playerAct must_== RegularRaise(2.333f)
+      }
+
     }
 
   }
