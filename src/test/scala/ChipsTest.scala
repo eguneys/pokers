@@ -7,8 +7,11 @@ class ChipsTest extends PokerTest {
     "divide rounded" in {
       val chips = Chips(10)
 
-      chips /~ 3 must_== Chips(3.33f)
-    }
+      (chips / 3).value must_== 3
 
+      val chips1k = Chips(1000)
+
+      (chips1k / 3).value must_== 333
+    }
   }
 }

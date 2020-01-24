@@ -14,7 +14,7 @@ class UciMoveTest extends PokerTest {
 
       Uci.Move("TR2.333") must beSome.like {
         case m =>
-          m.playerAct must_== RegularRaise(2.333f)
+          m.playerAct must_== RegularRaise(2)
       }
 
     }

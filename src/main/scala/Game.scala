@@ -36,8 +36,8 @@ case class Game(
 
 object Game {
 
-  def apply(blinds: Chips, button: StackIndex, iStacks: List[Chips]): Game =
-    Game(Dealer.empty(blinds, button, iStacks))
+  def apply(button: StackIndex, iStacks: List[Chips]): Game =
+    Game(Dealer.empty(button, iStacks))
 
   def apply(dealer: Dealer): Game = Game(dealer, HandDealer.shuffled(dealer.stacks.length))
 

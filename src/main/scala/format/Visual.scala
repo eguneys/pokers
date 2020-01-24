@@ -2,10 +2,10 @@ package poker
 package format
 
 
-// blinds bettingRound button turnToAct lastFullRaise!runningPot~sidePot
+// bettingRound button turnToAct lastFullRaise!runningPot~sidePot
 // role stack recentWager lastAction|. 
 
-// 100 (P|F|T|R) 0 0 100!100 0 1 2 3~50 0 1 2
+// (P|F|T|R) 0 0 100!100 0 1 2 3~50 0 1 2
 // (I|F|O|N) 100 10 CA
 // I 100 10 RR200
 // I 100 10 .
@@ -13,16 +13,16 @@ package format
 
 object Visual {
 
-  private val HeaderPattern = "(\\d+\\.?0?) (P|F|T|R) (\\d) (\\d) (\\d+\\.?0?)".r
+  private val HeaderPattern = "(P|F|T|R) (\\d) (\\d) (\\d+\\.?0?)".r
 
-  private val StackPattern = "(I|F|O|N) (\\d+\\.?0?) (\\d+\\.?0?) (\\.|\\w+\\.?0?)".r
+  private val StackPattern = "(I|F|O|N) (\\d+\\.?\\d*) (\\d+\\.?\\d*) (\\.|\\w+\\.?0?)".r
 
-  private val ActPattern = "(CA|CH|FO|RR|AA|AC|AH|AF)(\\d*\\.?0?)".r
+  private val ActPattern = "(CA|CH|FO|RR|AA|AC|AH|AF)(\\d*\\.?\\d*)".r
 
   private def readAct(str: String) = str match {
     case ActPattern(act, "") =>
       PlayerAct.forsyth(act).get
-    case ActPattern(act, raise) => RegularRaise(Chips(raise.toFloat))
+    case ActPattern(act, raise) => RegularRaise(Chips(raise.toInt))
   }
 
   private def writeAct(act: PlayerAct) = act match {
@@ -32,9 +32,9 @@ object Visual {
 
   def readStack(source: String): Stack = source match {
     case StackPattern(role, stack, recentWager, ".") =>
-      Stack(StackRole forsyth role.charAt(0) get, Chips(stack.toFloat), Chips(recentWager.toFloat), None)
+      Stack(StackRole forsyth role.charAt(0) get, Chips(stack.toInt), Chips(recentWager.toInt), None)
     case StackPattern(role, stack, recentWager, lastAction) =>
-      Stack(StackRole forsyth role.charAt(0) get, Chips(stack.toFloat), Chips(recentWager.toFloat), Some(readAct(lastAction)))
+      Stack(StackRole forsyth role.charAt(0) get, Chips(stack.toInt), Chips(recentWager.toInt), Some(readAct(lastAction)))
   }
 
   def writeStack(stack: Stack): String = {
@@ -44,7 +44,7 @@ object Visual {
   def readPot(source: String): Pot = {
     val header = source.split(' ')
 
-    val wager = Chips(header.head.toFloat)
+    val wager = Chips(header.head.toInt)
     val involved = header.tail.map(_.toInt).toList
 
     Pot(wager, involved)
@@ -68,12 +68,11 @@ object Visual {
 
 
     headerS match {
-      case HeaderPattern(blinds, round, button, toAct, lastFullRaise) => Dealer(
-        Chips(blinds.toFloat),
+      case HeaderPattern(round, button, toAct, lastFullRaise) => Dealer(
         BettingRound forsyth round.charAt(0) get,
         button.toInt,
         toAct.toInt,
-        Chips(lastFullRaise.toFloat),
+        Chips(lastFullRaise.toInt),
         stacks.toVector,
         runningPot,
         sidePots
@@ -87,7 +86,7 @@ object Visual {
     val stacks = dealer.stacks.map (writeStack) mkString "\n"
     val pots = (dealer.runningPot +: dealer.sidePots).map(writePot) mkString "~"
 
-    s"${dealer.blinds} ${dealer.round.forsyth} ${dealer.button} ${dealer.turnToAct} ${dealer.lastFullRaise}!${pots}\n${stacks}"
+    s"${dealer.round.forsyth} ${dealer.button} ${dealer.turnToAct} ${dealer.lastFullRaise}!${pots}\n${stacks}"
   }
 
   def addNewLines(str: String) = "\n" + str + "\n"

@@ -1,14 +1,12 @@
 package poker
 
-case class Dealer(blinds: Chips,
-  round: BettingRound,
+case class Dealer(round: BettingRound,
   button: StackIndex,
   turnToAct: StackIndex,
   lastFullRaise: Chips,
   stacks: Vector[Stack],
   runningPot: Pot,
   sidePots: List[Pot]) {
-
 
   def diff(i: StackIndex): PlayerDiff = stacks(i).diff
 
@@ -55,8 +53,8 @@ case class Dealer(blinds: Chips,
   def validRaises: List[Raise] = {
     val recentWagers = stacks.map(_.recentWager).foldLeft(Chips.empty)(_+_)
     val pot = runningPot.wager + recentWagers + toCall
-    val halfPot = pot /~ 2
-    val thirdPot = pot /~ 3
+    val halfPot = pot / 2
+    val thirdPot = pot / 3
     val minRaise = lastFullRaise
 
     List(
@@ -256,25 +254,28 @@ case class Dealer(blinds: Chips,
 
 case object Dealer {
 
-  def empty(blinds: Chips, button: StackIndex, iStacks: List[Chips]) = {
+  def empty(button: StackIndex, iStacks: List[Chips]) = {
 
     val sl = iStacks.length;
 
     val sb = (button + 1) % sl;
     val bb = (sb + 1) % sl;
     val toAct = (bb + 1) % sl;
-    val lastFullRaise = blinds;
+
+    val SBChips = Chips(1)
+    val BBChips = Chips(2)
+
+    val lastFullRaise = BBChips
 
     val stacks = iStacks.zipWithIndex.map({
-      case (stack, i) if i == sb  => Stack(Involved, stack - blinds / 2, blinds / 2, None)
-      case (stack, i) if i == bb => Stack(Involved, stack - blinds, blinds, None)
+      case (stack, i) if i == sb  => Stack(Involved, stack - SBChips, SBChips, None)
+      case (stack, i) if i == bb => Stack(Involved, stack - BBChips, BBChips, None)
       case (stack, _) => Stack(Involved, stack, Chips.empty, None)
     })
 
     val runningPot = Pot(Chips.empty, stacks.zipWithIndex.map(_._2))
 
-    Dealer(blinds,
-      Preflop,
+    Dealer(Preflop,
       button,
       toAct,
       lastFullRaise,

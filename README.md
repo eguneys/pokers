@@ -62,7 +62,6 @@ On a betting round, when the action returns to a player, if facing a full-raise 
 At the end of a betting round, players that went all-in create side pots. A side pot consists of amount of wager and players involved.
 
     Dealer(
-        Int blinds
         Betting Round
             Pre-flop Flop Turn River
 
@@ -210,10 +209,10 @@ Situation(
 
 Dealer Visual - Fen
 
-     blinds bettingRound button turnToAct lastFullRaise!runningPot~sidePot
-     role stack recentWager lastAction|. 
+    bettingRound button turnToAct lastFullRaise!runningPot~sidePot
+    role stack recentWager lastAction|. 
 
-     100 (P|F|T|R) 0 0 100!100 0 1 2 3~50 0 1 2
+     (P|F|T|R) 0 0 100!100 0 1 2 3~50 0 1 2
      (I|F|O|N) 100 10 CA
      I 100 10 RR200
      I 100 10 .

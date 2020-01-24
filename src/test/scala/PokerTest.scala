@@ -9,7 +9,7 @@ import poker.format.{ Visual }
 
 trait PokerTest extends Specification with ValidationMatchers {
 
-  implicit def floatToChips(value: Float): Chips = Chips(value)
+  implicit def intToChips(value: Int): Chips = Chips(value)
 
 
   implicit def stringToSituationBuilder(str: String) = {
@@ -17,8 +17,8 @@ trait PokerTest extends Specification with ValidationMatchers {
     Situation(dealer, HandDealer.shuffled(dealer.stacks.length))
   }
 
-  def makeDealer(blinds: Int, stacks: List[Chips]): Dealer =
-    Dealer.empty(blinds, 0, stacks)
+  def makeDealer(stacks: List[Chips]): Dealer =
+    Dealer.empty(0, stacks)
 
   implicit def richGame(game: Game) = new {
 

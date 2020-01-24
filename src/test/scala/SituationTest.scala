@@ -6,7 +6,7 @@ class SituationTest extends PokerTest {
 
     "detect next turn" in {
       ("""
-10 P 0 0 10!0 0 1 2
+P 0 0 10!0 0 1 2
 I 100 0 .
 I 100 5 .
 I 100 10 .
@@ -16,14 +16,14 @@ I 100 10 .
 
     "detect next round" in {
       ("""
-10 P 0 0 10!0 0 1 2
+P 0 0 10!0 0 1 2
 I 100 10 CA
 I 100 10 CA
 I 100 10 CH
 """).nextRound must beTrue
 
       ("""
-10 P 0 0 10!0 0 1 2
+P 0 0 10!0 0 1 2
 I 100 10 CA
 F 100 5 FO
 I 100 10 CH
@@ -31,7 +31,7 @@ I 100 10 CH
 
 
       ("""
-10 P 0 0 10!0 0 1 2
+P 0 0 10!0 0 1 2
 I 100 10 CA
 N 0 5 AA
 I 100 10 CH
@@ -41,14 +41,14 @@ I 100 10 CH
 
     "detect showdown" in {
       ("""
-10 R 0 0 10!0 0 1 2
+R 0 0 10!0 0 1 2
 I 100 10 CA
 I 100 10 CA
 I 100 10 CH
 """).showdown must beTrue
 
       ("""
-10 P 0 0 10!0 0 1 2
+P 0 0 10!0 0 1 2
 N 0 90 AA
 N 0 10 AA
 I 0 100 CA
@@ -58,7 +58,7 @@ I 0 100 CA
 
     "detect onewin" in {
       ("""
-10 R 0 0 10!0 0 1 2
+R 0 0 10!0 0 1 2
 F 100 10 FO
 F 100 10 FO
 I 100 10 .
@@ -67,7 +67,7 @@ I 100 10 .
 
 
     "detect next turn after all in" in {
-      val dealer = Dealer.empty(10f, 0, List(100f, 100f))
+      val dealer = Dealer.empty(0, List(100, 100))
 
       val game = Game(dealer)
 
