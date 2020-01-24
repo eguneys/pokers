@@ -30,10 +30,11 @@ case class Situation(dealer: Dealer,
     (round == River && !oneWin) ||
     (dealer.oneInvolved && dealer.allInsExists)
   } else {
-    dealer.noneInvolved
+    !oneWin && dealer.noneInvolved
   }
 
-  def oneWin: Boolean = dealer.oneInvolved && !dealer.allInsExists
+  def oneWin: Boolean = (dealer.oneInvolved && !dealer.allInsExists) ||
+  (dealer.noneInvolved && dealer.oneNewAllIn)
   
   def end: Boolean = showdown || oneWin
 

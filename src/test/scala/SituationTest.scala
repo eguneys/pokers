@@ -73,8 +73,21 @@ I 100 10 .
 
       game.playMoves(Call, AllInNone) must beSuccess.like {
         case g =>
+          g.situation.oneWin must beFalse
           g.situation.showdown must beFalse
           g.situation.nextTurn must beTrue
+      }
+    }
+
+    "detect one win after all in fold" in {
+      val dealer = Dealer.empty(0, List(100, 100))
+
+      val game = Game(dealer)
+
+      game.playMoves(AllInNone, Fold) must beSuccess.like {
+        case g =>
+          g.situation.showdown must beFalse
+          g.situation.oneWin must beTrue
       }
     }
   }

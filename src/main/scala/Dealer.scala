@@ -31,6 +31,8 @@ case class Dealer(round: BettingRound,
   def oneInvolved = involveds == 1
   def allInsExists = allIns > 0
 
+  def oneNewAllIn = newAllIns == 1
+
   def nonFoldStacks: Vector[Stack] = stacks.filterNot(_ is Folded)
   def involvedStacks: Vector[Stack] = stacks.filter(_ is Involved)
   def newAllInStacks: Vector[Stack] = stacks.filter(_ is NewAllIn)
