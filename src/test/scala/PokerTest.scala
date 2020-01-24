@@ -38,6 +38,11 @@ trait PokerTest extends Specification with ValidationMatchers {
 
   }
 
+  def haveDealerAct(f: PartialFunction[DealerAct, Boolean]): Matcher[Valid[(Game, Move)]] = beSuccess.like {
+    case (_, move) =>
+      f(move.dealerAct)
+  }
+
   def beGame(visual: String): Matcher[Valid[Game]] = beSuccess.like {
     case g => g.dealer.visual must_== (Visual << visual).visual
   }

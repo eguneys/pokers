@@ -30,8 +30,7 @@ case class Dealer(round: BettingRound,
   def noneInvolved = involveds == 0
   def oneInvolved = involveds == 1
   def allInsExists = allIns > 0
-
-  def oneNewAllIn = newAllIns == 1
+  def oneAllIn = allIns == 1
 
   def nonFoldStacks: Vector[Stack] = stacks.filterNot(_ is Folded)
   def involvedStacks: Vector[Stack] = stacks.filter(_ is Involved)
@@ -135,12 +134,12 @@ case class Dealer(round: BettingRound,
   }
 
   def distributeOne(): PotDistribution = {
-    val allPots = runningPot.wager
+    val onlyPot = runningPot
     val involved = stacks.zipWithIndex
-      .filter(_._1 is Involved)
+      .filter(_._1 onlyInPot)
       .map(_._2).toList
 
-    PotDistribution(allPots, involved)
+    PotDistribution(onlyPot.wager, involved)
   }
 
 
@@ -181,6 +180,12 @@ case class Dealer(round: BettingRound,
   }
 
   def endRound: Dealer = {
+    collectPots.copy(
+      stacks = stacks.map(_.collectWager)
+    )
+  }
+
+  def oneWin: Dealer = {
     collectPots.copy(
       stacks = stacks.map(_.collectWager)
     )

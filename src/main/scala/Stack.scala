@@ -6,6 +6,8 @@ case class Stack(role: StackRole, stack: Chips, recentWager: Chips, lastAction: 
 
   def is(t: StackRole) = role == t
 
+  def onlyInPot = role == Involved || role == OldAllIn || role == NewAllIn
+
   def acted: Boolean = lastAction.isDefined
 
   def allin(newStack: Chips, newWager: Chips, allInAct: PlayerAct): Option[Stack] = {

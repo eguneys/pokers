@@ -31,6 +31,14 @@ I 98 0 .
 """)
       }
 
+      "should allow all in fold" in {
+        game.playMoves(AllInNone, Fold) must beGame("""
+P 0 0 98!102 1
+F 98 0 .
+O 0 0 .
+""")
+      }
+
       "should distribute after showdown" in {
         val game2 = game.playMoves(Call, Check,
           Check, Check,

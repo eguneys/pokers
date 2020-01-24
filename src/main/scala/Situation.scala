@@ -34,7 +34,7 @@ case class Situation(dealer: Dealer,
   }
 
   def oneWin: Boolean = (dealer.oneInvolved && !dealer.allInsExists) ||
-  (dealer.noneInvolved && dealer.oneNewAllIn)
+  (dealer.noneInvolved && dealer.oneAllIn)
   
   def end: Boolean = showdown || oneWin
 

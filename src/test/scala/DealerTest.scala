@@ -407,10 +407,10 @@ F 25 0 .
       "distribute one" in {
         val dealer = Visual << """
 T 0 4 10!300 0 1 2 3 4 5
-O 0 0 .
-O 0 0 .
-O 0 0 .
-O 0 0 .
+F 10 0 .
+F 10 0 .
+F 10 0 .
+F 10 0 .
 I 25 0 .
 F 25 0 .
 F 25 0 .

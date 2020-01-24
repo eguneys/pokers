@@ -25,7 +25,6 @@ case class Move(
       val middle = situationAfter.middle
       val runningPot = situationAfter.dealer.runningPot
       val sidePots = situationAfter.dealer.sidePots
-
       NextRound(toAct, playerDiff, middle, runningPot, sidePots)
     } else {
       NextTurn(toAct, playerDiff)
@@ -44,6 +43,10 @@ case class Move(
       after.nextTurn
     } else if (iSituation.nextRound) {
       after.nextRound
+    } else if (iSituation.oneWin) {
+      after.oneWin
+    } else if (iSituation.showdown) {
+      after.oneWin
     } else {
       after
     }
